@@ -3,8 +3,8 @@ from aiogram import types, Dispatcher
 from data_base import sqlite_db
 
 
-async def menu_command(message: types.Message):
-    await sqlite_db.sql_read(message)
+# async def menu_command(message: types.Message):
+#     await sqlite_db.sql_read(message)
 
 async def echo_send(message: types.Message):
     if message.text == 'Привет' or message.text == 'привет':
@@ -16,5 +16,5 @@ async def echo_send(message: types.Message):
 
 
 def register_handler_other(dp: Dispatcher):
-    dp.register_message_handler(menu_command, commands=['Станции'], state=None)
+    # dp.register_message_handler(menu_command, commands=['Станции'], state=None)
     dp.register_message_handler(echo_send)

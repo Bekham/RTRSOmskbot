@@ -1,0 +1,114 @@
+{
+  "stations": [
+    {
+      "station_rus": "Бекишево",
+      "station_lat": "bekishevo",
+      "description": "Описание Бекишево"
+    },
+    {
+      "station_rus": "Веселая Поляна",
+      "station_lat": "vp",
+      "description": "Описание Веселая Поляна"
+    },
+    {
+      "station_rus": "Вольное",
+      "station_lat": "volnoe",
+      "description": "Описание Вольное"
+    },
+    {
+      "station_rus": "Екатеринославка",
+      "station_lat": "ekatrinoslavka",
+      "description": "Описание Екатеринославка"
+    },
+    {
+      "station_rus": "Михайловка",
+      "station_lat": "mihailovka",
+      "description": "Описание Михайловка"
+    },
+    {
+      "station_rus": "Москаленский",
+      "station_lat": "moskalensky",
+      "description": "Описание Москаленский"
+    },
+    {
+      "station_rus": "Неверовка",
+      "station_lat": "neverovka",
+      "description": "Описание Неверовка"
+    },
+    {
+      "station_rus": "Новоцарицыно",
+      "station_lat": "novotsaritsino",
+      "description": "Описание Новоцарицыно"
+    },
+    {
+      "station_rus": "Одесское",
+      "station_lat": "odesskoe",
+      "description": "Описание Одесское"
+    },
+    {
+      "station_rus": "Павлоградка",
+      "station_lat": "pavlogradka",
+      "description": "Описание Павлоградка"
+    },
+    {
+      "station_rus": "Паново",
+      "station_lat": "panovo",
+      "description": "Описание Паново"
+    },
+    {
+      "station_rus": "Полтавка",
+      "station_lat": "polavka",
+      "description": "Описание Полтавка"
+    },
+    {
+      "station_rus": "Русская Поляна",
+      "station_lat": "rp",
+      "description": "Описание Русская Поляна"
+    },
+    {
+      "station_rus": "Саргатское",
+      "station_lat": "sargatskoe",
+      "description": "Описание Саргатское"
+    },
+    {
+      "station_rus": "Цветково",
+      "station_lat": "setkovo",
+      "description": "Описание Цветково"
+    },
+    {
+      "station_rus": "Цветнополье",
+      "station_lat": "tsvetnopole",
+      "description": "Описание Цветнополье"
+    },
+    {
+      "station_rus": "Щербакуль",
+      "station_lat": "sherbakul",
+      "description": "Описание Щербакуль"
+    },
+    {
+      "station_rus": "Щербаки",
+      "station_lat": "sherbaki",
+      "description": "Описание Щербаки"
+    },
+    {
+      "station_rus": "Называевск",
+      "station_lat": "nz",
+      "description": "Описание Называевск"
+    },
+    {
+      "station_rus": "Хутора",
+      "station_lat": "khutora",
+      "description": "Описание Хутора"
+    },
+    {
+      "station_rus": "Исилькуль",
+      "station_lat": "isilkul",
+      "description": "Описание Исилькуль"
+    },
+    {
+      "station_rus": "Омск",
+      "station_lat": "omsk",
+      "description": "Описание Омск"
+    }
+  ]
+}

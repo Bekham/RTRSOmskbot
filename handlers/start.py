@@ -15,6 +15,7 @@ class FSMStart(StatesGroup):
 
 
 async def command_start(message: types.Message):
+    await message.delete()
     user_data = sqlite_db.sql_read_user(message.from_user.id)
     print(user_data)
     if user_data == None:

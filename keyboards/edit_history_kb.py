@@ -1,6 +1,7 @@
-from aiogram import types
-# from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
+# from aiogram import types
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
 
-edit_history_client = types.ReplyKeyboardMarkup(resize_keyboard=True)
+edit_history_client = ReplyKeyboardMarkup(resize_keyboard=True)
 buttons = ["Создать задание", "История"]
-edit_history_client.add(*buttons)
+but_station = KeyboardButton('Станции')
+edit_history_client.add(*buttons).add(but_station)
