@@ -34,10 +34,11 @@ async def task_num_delete(message: types.Message, state: FSMContext):
         data['num_del'] = message.text
         station = data.get('station')
     if await sqlite_db.sql_delete_task(state, user_id=message.from_user.id,  is_active=0):
-        await message.answer("Данные успешно сохранены!",
+        await message.answer("Задание выполнено!",
                              reply_markup=back_delete_kb.get_back_delete(station))
     else:
-        await message.answer("Ошибка! Задание не сохранено!",
+        await message.answer("Ошибка сохранения!\n"
+                             "Выполнение задания не сохранено!",
                              reply_markup=back_delete_kb.get_back_delete(station))
     # print(data['description'], station)
     await state.finish()

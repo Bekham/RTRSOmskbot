@@ -116,18 +116,20 @@ async def sql_delete_task(state, user_id, is_active=0):
         id = data.get('num_del')
     data_station = sql_read_station(station)
     for data in data_station:
-        if data[0] == id:
-            userUpdate = user_id
-            updateDate = datetime.datetime.now()
-            column_values = (userUpdate, updateDate, is_active, id)
-            try:
-                sqlite_update_query = "UPDATE " + station + " SET userUpdate = ?, updateDate = ?, is_active = ? WHERE id = ?"
-                cur.execute(sqlite_update_query, column_values)
-                base.commit()
-                return True
-            except:
-                return False
-    return False
+        try:
+            if data[0] == int(id):
+                userUpdate = user_id
+                updateDate = datetime.datetime.now()
+                column_values = (userUpdate, updateDate, is_active, id)
+                try:
+                    sqlite_update_query = "UPDATE " + station + " SET userUpdate = ?, updateDate = ?, is_active = ? WHERE id = ?"
+                    cur.execute(sqlite_update_query, column_values)
+                    base.commit()
+                    return True
+                except:
+                    return False
+        except:
+            return False
 
 async def sql_restore_task(state, user_id, is_active=1):
     async with state.proxy() as data:
