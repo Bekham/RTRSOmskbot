@@ -114,7 +114,6 @@ async def sql_delete_task(state, user_id, is_active=0):
     async with state.proxy() as data:
         station = data.get('station')
         id = data.get('num_del')
-        print(id)
     data_station = sql_read_station(station)
     for data in data_station:
         if data[0] == id:
