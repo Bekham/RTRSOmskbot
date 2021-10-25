@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from aiogram import types, Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
@@ -13,7 +15,7 @@ async def stations(message: types.Message):
     user_data = sqlite_db.sql_read_user(message.from_user.id)
     if message.from_user.id == user_data[1]:
         await message.answer("Станции Омского Цеха:", reply_markup=stations_kb.get_keyboard())
-        await message.delete()
+        # await message.delete()
 
 
 
@@ -24,11 +26,46 @@ async def callbacks_num(call: types.CallbackQuery):
     data_stations = sqlite_db.sql_read_all_stations()
     for item in data_stations:
         if action == item[2]:
-            await call.message.answer(f"Здесь будут задания станции {item[1]}",
-                                      reply_markup=edit_history_kb.edit_history_client)
+            data_station = sqlite_db.sql_read_station(item[2])
+
+            await call.message.answer(f"Задания по станции {item[1]}:")
+            if data_station:
+                count = 0
+                for task in data_station:
+                    if task[6]:
+                        count += 1
+                num_list = 0
+                for task in data_station:
+                    if task[6]:
+                        num_list += 1
+                        user_update = sqlite_db.find_user(task[3])
+                        if user_update:
+                            # print(user_update)
+                            task_user = f'{user_update[0][5]} {user_update[0][6]}'
+                        else:
+                            task_user = ''
+                        if num_list != count:
+                            await call.message.answer(f"{task[0]}. Дата: {(task[5]).split(' ')[0]}. \n "
+                                                      f"Создал:  {task_user}\n "
+                                                      f"{task[1]}")
+                        else:
+                            await call.message.answer(f"{task[0]}. Дата: {(task[5]).split(' ')[0]}. \n "
+                                                      f"Создал:  {task_user}\n "
+                                                      f"{task[1]}",
+                                                      reply_markup=edit_history_kb.get_keyboard_station(item[2]))
+                    elif count == 0:
+                        # await call.message.answer(f"Задания по станции {item[1]}:")
+                        await call.message.answer(f"Задания по станции {item[1]} отсутствуют.",
+                                                  reply_markup=edit_history_kb.get_keyboard_station(item[2]))
+            else:
+                # await call.message.answer(f"Задания по станции {item[1]}:")
+                await call.message.answer(f"Задания по станции {item[1]} отсутствуют.",
+                                          reply_markup=edit_history_kb.get_keyboard_station(item[2]))
     # Не забываем отчитаться о получении колбэка
     await call.answer()
-    await call.message.delete_reply_markup()
+    # await call.message.delete_reply_markup()
+
+
 
 def register_handler_client(dp: Dispatcher):
     dp.register_message_handler(stations, Text(equals="Станции"), state='*')
@@ -36,5 +73,6 @@ def register_handler_client(dp: Dispatcher):
 
 def register_callback_query_handler(dp: Dispatcher):
     dp.register_callback_query_handler(callbacks_num, Text(startswith="st_"))
+
 
 

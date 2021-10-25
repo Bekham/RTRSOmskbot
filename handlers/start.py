@@ -70,7 +70,7 @@ async def start_lastname(message: types.Message, state: FSMContext):
 
 async def cmd_cancel(message: types.Message, state: FSMContext):
     await state.finish()
-    await message.answer("Действие отменено", reply_markup=types.ReplyKeyboardRemove())
+    await message.answer("Действие отменено", reply_markup=client_kb.kb_client)
 
 
 
