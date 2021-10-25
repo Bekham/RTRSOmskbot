@@ -4,7 +4,7 @@ from aiogram.dispatcher.filters import Text, state
 from aiogram.dispatcher.filters.state import StatesGroup, State
 
 from data_base import sqlite_db
-from keyboards import edit_history_kb, client_kb
+from keyboards import edit_history_kb, client_kb, back_delete_kb
 
 
 class FSMDel_task(StatesGroup):
@@ -18,8 +18,10 @@ async def delete_task(call: types.CallbackQuery, state: FSMContext):
         data_stations = sqlite_db.sql_read_all_stations()
         for item in data_stations:
             if station == item[2]:
-                await call.message.answer(f"Удаление задания станции {item[1]}.")
-                await call.message.answer("Введите номер задания для удаления:")
+                await call.message.answer(f"Выполнение задания станции {item[1]}.\n"
+                                          f"Введите номер задания для выполнения:",
+                                          reply_markup=client_kb.kb_client)
+                # await call.message.answer("Введите номер задания для удаления:")
                 await FSMDel_task.num_del.set()
                 async with state.proxy() as data:
                     data['station'] = item[2]
@@ -30,11 +32,13 @@ async def delete_task(call: types.CallbackQuery, state: FSMContext):
 async def task_num_delete(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['num_del'] = message.text
-        # station = data.get('station')
+        station = data.get('station')
     if await sqlite_db.sql_delete_task(state, user_id=message.from_user.id,  is_active=0):
-        await message.answer("Данные успешно удалены!", reply_markup=client_kb.kb_client)
+        await message.answer("Данные успешно сохранены!",
+                             reply_markup=back_delete_kb.get_back_delete(station))
     else:
-        await message.answer("Ошибка! Задание не удалено!", reply_markup=client_kb.kb_client)
+        await message.answer("Ошибка! Задание не сохранено!",
+                             reply_markup=back_delete_kb.get_back_delete(station))
     # print(data['description'], station)
     await state.finish()
 

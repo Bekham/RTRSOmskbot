@@ -2,13 +2,13 @@
 from aiogram import types
 
 
-def get_back_delete(st_name):
+def get_back_restore(st_name):
     back = f'st_{st_name}'
-    delete_task = f'del_task_{st_name}'
+    restore = f'restore_{st_name}'
     # Генерация клавиатуры.
     buttons = [
-        types.InlineKeyboardButton(text="Назад к заданиям", callback_data=back),
-        types.InlineKeyboardButton(text="Выполнить задание", callback_data=delete_task)
+        types.InlineKeyboardButton(text="Назад", callback_data=back),
+        types.InlineKeyboardButton(text="Восстановить задание", callback_data=restore)
     ]
     # Благодаря row_width=2, в первом ряду будет две кнопки, а оставшаяся одна
     # уйдёт на следующую строку

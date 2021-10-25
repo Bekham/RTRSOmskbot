@@ -25,9 +25,28 @@ def sql_start():
                  lastVisitDate timestamp,
                  first_name TEXT,
                  last_name TEXT,
-                 is_admin BOOL)""")
+                 is_admin BOOL,
+                 chat_id INTEGER)""")
     create_stations_db()
+    # load_data_users()
     base.commit()
+
+def load_data_users():
+    users = sql_read_all_user()
+    for user in users:
+        user_id = user[1]
+        user_name = user[2]
+        createDate = user[3]
+        lastVisitDate = user[4]
+        first_name = user[5]
+        last_name = user[6]
+        is_admin = user[7]
+        user_data = (user_id, user_name, createDate, lastVisitDate, first_name, last_name, is_admin)
+        cur.execute(
+            """INSERT INTO users (user_id, user_name, createDate, lastVisitDate, first_name, last_name, is_admin) VALUES (?, ?, ?, ?, ?, ?, ?)""",
+            user_data)
+        base.commit()
+        print(user)
 
 
 def create_stations_db():
@@ -52,6 +71,14 @@ def sql_read_all_stations():
         sqlite_select_query = """SELECT * FROM stations"""
         records = cur.execute(sqlite_select_query).fetchall()
         return records
+    except:
+        return None
+
+def sql_find_name_station(station_lat):
+    try:
+        sqlite_select_query = """SELECT station_rus FROM stations WHERE station_lat=?"""
+        station_rus = cur.execute(sqlite_select_query, (station_lat,)).fetchall()
+        return station_rus
     except:
         return None
 
@@ -98,6 +125,21 @@ async def sql_delete_task(state, user_id, is_active=0):
     except:
         return False
 
+async def sql_restore_task(state, user_id, is_active=1):
+    async with state.proxy() as data:
+        station = data.get('station')
+        id = data.get('restores_task')
+    userUpdate = user_id
+    updateDate = datetime.datetime.now()
+    column_values = (userUpdate, updateDate, is_active, id)
+    try:
+        sqlite_update_query = "UPDATE " + station + " SET userUpdate = ?, updateDate = ?, is_active = ? WHERE id = ?"
+        cur.execute(sqlite_update_query, column_values)
+        base.commit()
+        return True
+    except:
+        return False
+
 async def sql_add_new_user(state, user_id, is_admin=0):
     async with state.proxy() as data:
         user_name = data.get('first_name').title()
@@ -123,11 +165,21 @@ def sql_read_user(user_id):
     except:
         return None
 
+def sql_read_all_user():
+    try:
+        sqlite_select_query = """SELECT * FROM users"""
+        records = cur.execute(sqlite_select_query).fetchall()
+        return records
+    except:
+        return None
+
 
 def sql_update_user(user_id, username):
     try:
         cur.execute('''UPDATE 'users' SET user_name = ? WHERE user_id = ?''', (username, user_id))
         cur.execute('''UPDATE 'users' SET lastVisitDate = ? WHERE user_id = ?''', (datetime.datetime.now(), user_id))
+        base.commit()
+
     except:
         pass
 
@@ -135,6 +187,7 @@ def sql_update_user(user_id, username):
 def sql_update_date_user(user_id):
     try:
         cur.execute('''UPDATE 'users' SET lastVisitDate = ? WHERE user_id = ?''', (datetime.datetime.now(), user_id))
+        base.commit()
     except:
         pass
 
@@ -146,3 +199,11 @@ def find_user(user_id):
         return records
     except:
         return None
+
+def sql_update_user_chat_id(user_id, chat_id):
+    try:
+        cur.execute('''UPDATE users SET chat_id = ? WHERE user_id = ?''', (chat_id, user_id))
+        base.commit()
+        return True
+    except:
+        return False

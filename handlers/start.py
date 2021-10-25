@@ -24,6 +24,11 @@ async def command_start(message: types.Message):
                                f'фамилию нашего Начальника:')
         await FSMStart.verification.set()
     else:
+        if user_data[8] == None:
+            # print(message)
+            # print(message.from_user.id)
+            sqlite_db.sql_update_user_chat_id(message.from_user.id, message.chat.id)
+
         await message.answer(f'Привет, {user_data[2]}!\n'
                              f'Добро пожаловать в РТРС ОМСК',
                              reply_markup=client_kb.kb_client)

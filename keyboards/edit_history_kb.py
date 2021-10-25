@@ -15,7 +15,7 @@ def get_keyboard_station(st_name):
     # Генерация клавиатуры.
     buttons = [
         types.InlineKeyboardButton(text="Создать задание", callback_data=new_task),
-        types.InlineKeyboardButton(text="Удалить задание", callback_data=delete_task),
+        types.InlineKeyboardButton(text="Выполнить задание", callback_data=delete_task),
         types.InlineKeyboardButton(text="История", callback_data=history)
     ]
     # Благодаря row_width=2, в первом ряду будет две кнопки, а оставшаяся одна

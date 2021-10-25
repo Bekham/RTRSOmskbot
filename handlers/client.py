@@ -30,32 +30,33 @@ async def callbacks_num(call: types.CallbackQuery):
 
             await call.message.answer(f"Задания по станции {item[1]}:")
             if data_station:
-                count = 0
+                active_count = 0
                 for task in data_station:
                     if task[6]:
-                        count += 1
+                        active_count += 1
                 num_list = 0
-                for task in data_station:
-                    if task[6]:
-                        num_list += 1
-                        user_update = sqlite_db.find_user(task[3])
-                        if user_update:
-                            # print(user_update)
-                            task_user = f'{user_update[0][5]} {user_update[0][6]}'
-                        else:
-                            task_user = ''
-                        if num_list != count:
-                            await call.message.answer(f"{task[0]}. Дата: {(task[5]).split(' ')[0]}. \n "
-                                                      f"Создал:  {task_user}\n "
-                                                      f"{task[1]}")
-                        else:
-                            await call.message.answer(f"{task[0]}. Дата: {(task[5]).split(' ')[0]}. \n "
-                                                      f"Создал:  {task_user}\n "
-                                                      f"{task[1]}",
-                                                      reply_markup=edit_history_kb.get_keyboard_station(item[2]))
-                    elif count == 0:
-                        # await call.message.answer(f"Задания по станции {item[1]}:")
-                        await call.message.answer(f"Задания по станции {item[1]} отсутствуют.",
+                if active_count != 0:
+                    for task in data_station:
+                        if task[6]:
+                            num_list += 1
+                            user_update = sqlite_db.find_user(task[3])
+                            if user_update:
+                                # print(user_update)
+                                task_user = f'{user_update[0][5]} {user_update[0][6]}'
+                            else:
+                                task_user = ''
+                            if num_list != active_count:
+                                await call.message.answer(f"{task[0]}. Дата: {(task[5]).split(' ')[0]}. \n "
+                                                          f"Создал:  {task_user}\n "
+                                                          f"{task[1]}")
+                            else:
+                                await call.message.answer(f"{task[0]}. Дата: {(task[5]).split(' ')[0]}. \n "
+                                                          f"Создал:  {task_user}\n "
+                                                          f"{task[1]}",
+                                                          reply_markup=edit_history_kb.get_keyboard_station(item[2]))
+                else:
+                    # await call.message.answer(f"Задания по станции {item[1]}:")
+                    await call.message.answer(f"Задания по станции {item[1]} отсутствуют.",
                                                   reply_markup=edit_history_kb.get_keyboard_station(item[2]))
             else:
                 # await call.message.answer(f"Задания по станции {item[1]}:")
