@@ -3,7 +3,7 @@ from aiogram import types
 from data_base import sqlite_db
 
 
-def get_back_restore(st_name, user_id=0, pages='5_1'):
+def get_back_restore(st_name, user_id=0, pages='4_1'):
     back = f'st_{st_name}'
     restore = f'restore_{st_name}'
     delete_admin = f'delete_admin_{st_name}'

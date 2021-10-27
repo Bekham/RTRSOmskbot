@@ -41,21 +41,7 @@ async def station_history(call: types.CallbackQuery):
                                 f"Статус: {status}\n"\
                                 f"{task[1]}\n"\
                                 f"____________________________________\n"\
-                        # if num_list != total_count:
-                        #     await call.message.answer(f"Задание №{task[0]}. \n"
-                        #                               f"Создано {(task[4]).split(' ')[0]} пользователем {user_create[0][5]} {user_create[0][6]}\n"
-                        #                               f"Обновлено {(task[5]).split(' ')[0]} пользователем {user_update[0][5]} {user_update[0][6]}\n"
-                        #                               f"Статус: {status}\n"
-                        #                               f"{task[1]}\n"
-                        #                               f"____________________________________")
-                        # else:
-                        #     await call.message.answer(f"Задание №{task[0]}. \n"
-                        #                               f"Создано {(task[4]).split(' ')[0]} пользователем {user_create[0][5]} {user_create[0][6]}\n"
-                        #                               f"Обновлено {(task[5]).split(' ')[0]} пользователем {user_update[0][5]} {user_update[0][6]}\n"
-                        #                               f"Статус: {status}\n"
-                        #                               f"{task[1]}\n"
-                        #                               f"____________________________________",
-                        #                               reply_markup=history_back_restore_kb.get_back_restore(item[2], call.from_user.id))
+
                     await call.message.answer(text,
                         reply_markup=history_back_restore_kb.get_back_restore(item[2], call.from_user.id))
                     print(len(text_list))
