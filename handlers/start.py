@@ -89,4 +89,5 @@ def register_handler_start(dp: Dispatcher):
     # dp.register_message_handler(load_username, state=AddUser.username)
     dp.register_message_handler(cmd_cancel, commands="cancel", state="*")
     dp.register_message_handler(cmd_cancel, Text(equals="отмена", ignore_case=True), state="*")
+    dp.register_message_handler(cmd_cancel, Text(equals="Отмена создания задания", ignore_case=True), state="*")
 

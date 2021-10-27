@@ -1,8 +1,7 @@
 from aiogram.utils import executor
 from create_bot import dp
 from data_base import sqlite_db
-from handlers import start, client, admin, other, new_task, history, delete_task, restore_task
-
+from handlers import start, client, admin, other, new_task, history, delete_task, restore_task, full_delete_task
 
 
 async def on_startup(_):
@@ -19,6 +18,8 @@ new_task.register_handler_new_task(dp)
 delete_task.register_delete_task_query_handler(dp)
 delete_task.register_handler_delete_task(dp)
 history.register_history_query_handler(dp)
+full_delete_task.register_full_delete_task_query_handler(dp)
+full_delete_task.register_handler_full_delete_task(dp)
 restore_task.register_restore_task_query_handler(dp)
 restore_task.register_handler_restore_task(dp)
 admin.register_handler_admin(dp)

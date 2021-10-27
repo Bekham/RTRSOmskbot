@@ -146,6 +146,18 @@ async def sql_restore_task(state, user_id, is_active=1):
     except:
         return False
 
+async def sql_delete_task(station, id):
+    # async with state.proxy() as data:
+    #     station = data.get('station')
+    #     id = data.get('full_delete_task')
+    try:
+        sqlite_update_query = "DELETE FROM " + station + " WHERE id = ?"
+        cur.execute(sqlite_update_query, (id,))
+        base.commit()
+        return True
+    except:
+        return False
+
 async def sql_add_new_user(state, user_id, is_admin=0):
     async with state.proxy() as data:
         user_name = data.get('first_name').title()
@@ -205,6 +217,15 @@ def find_user(user_id):
         return records
     except:
         return None
+
+def user_is_admin(user_id):
+    try:
+        sqlite_select_query = "SELECT is_admin FROM users WHERE user_id=?"
+        records = cur.execute(sqlite_select_query, (user_id,)).fetchall()
+
+        return records[0][0]
+    except:
+        return False
 
 def sql_update_user_chat_id(user_id, chat_id):
     try:

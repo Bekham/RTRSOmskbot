@@ -21,7 +21,7 @@ async def new_task(call: types.CallbackQuery, state: FSMContext):
             if station == item[2]:
                 await call.message.answer(f"Создание нового задания станции {item[1]}."
                                           f"Введите описание неисправности:",
-                                          reply_markup=client_kb.kb_client)
+                                          reply_markup=client_kb.kb_station_cancel)
                 # await call.message.answer("Введите описание неисправности:",
                 #                           reply_markup=client_kb.kb_client)
                 await FSMNew_task.new_task_description.set()
@@ -37,7 +37,8 @@ async def task_description(message: types.Message, state: FSMContext):
         station = data.get('station')
     task =  message.text
     if await sqlite_db.sql_add_new_task(state, user_id=message.from_user.id):
-        await message.answer("Данные записаны успешно!", reply_markup=back_create_kb.get_back_create(station))
+        await message.answer("Данные записаны успешно!", reply_markup=client_kb.kb_client)
+        await message.answer("Задание добавлено в список активных задач!", reply_markup=back_create_kb.get_back_create(station))
         users_data = sqlite_db.sql_read_all_user()
         current_user_data = sqlite_db.sql_read_user(message.from_user.id)
         for user in users_data:

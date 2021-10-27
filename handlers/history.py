@@ -19,6 +19,8 @@ async def station_history(call: types.CallbackQuery):
                     await call.message.answer(f"История заданий станции {item[1]}:")
                     total_count = len(data_station)
                     num_list = 0
+                    text_list = []
+                    text = ''
                     for task in data_station:
                         num_list += 1
                         user_create = sqlite_db.find_user(task[2])
@@ -27,25 +29,40 @@ async def station_history(call: types.CallbackQuery):
                             status = 'Активно'
                         else:
                             status = 'Завершено'
-                        if num_list != total_count:
-                            await call.message.answer(f"Задание №{task[0]}. \n"
-                                                      f"Создано {(task[4]).split(' ')[0]} пользователем {user_create[0][5]} {user_create[0][6]}\n"
-                                                      f"Обновлено {(task[5]).split(' ')[0]} пользователем {user_update[0][5]} {user_update[0][6]}\n"
-                                                      f"Статус: {status}\n"
-                                                      f"{task[1]}\n"
-                                                      f"____________________________________")
-                        else:
-                            await call.message.answer(f"Задание №{task[0]}. \n"
-                                                      f"Создано {(task[4]).split(' ')[0]} пользователем {user_create[0][5]} {user_create[0][6]}\n"
-                                                      f"Обновлено {(task[5]).split(' ')[0]} пользователем {user_update[0][5]} {user_update[0][6]}\n"
-                                                      f"Статус: {status}\n"
-                                                      f"{task[1]}\n"
-                                                      f"____________________________________",
-                                                      reply_markup=history_back_restore_kb.get_back_restore(item[2]))
+                        text_list.append(f"Задание №{task[0]}. \n"
+                                f"Создано {(task[4]).split(' ')[0]} пользователем {user_create[0][5]} {user_create[0][6]}\n"
+                                f"Обновлено {(task[5]).split(' ')[0]} пользователем {user_update[0][5]} {user_update[0][6]}\n"
+                                f"Статус: {status}\n"
+                                f"{task[1]}\n"
+                                f"____________________________________\n")
+                        text += f"Задание №{task[0]}. \n" \
+                                f"Создано {(task[4]).split(' ')[0]} пользователем {user_create[0][5]} {user_create[0][6]}\n"\
+                                f"Обновлено {(task[5]).split(' ')[0]} пользователем {user_update[0][5]} {user_update[0][6]}\n"\
+                                f"Статус: {status}\n"\
+                                f"{task[1]}\n"\
+                                f"____________________________________\n"\
+                        # if num_list != total_count:
+                        #     await call.message.answer(f"Задание №{task[0]}. \n"
+                        #                               f"Создано {(task[4]).split(' ')[0]} пользователем {user_create[0][5]} {user_create[0][6]}\n"
+                        #                               f"Обновлено {(task[5]).split(' ')[0]} пользователем {user_update[0][5]} {user_update[0][6]}\n"
+                        #                               f"Статус: {status}\n"
+                        #                               f"{task[1]}\n"
+                        #                               f"____________________________________")
+                        # else:
+                        #     await call.message.answer(f"Задание №{task[0]}. \n"
+                        #                               f"Создано {(task[4]).split(' ')[0]} пользователем {user_create[0][5]} {user_create[0][6]}\n"
+                        #                               f"Обновлено {(task[5]).split(' ')[0]} пользователем {user_update[0][5]} {user_update[0][6]}\n"
+                        #                               f"Статус: {status}\n"
+                        #                               f"{task[1]}\n"
+                        #                               f"____________________________________",
+                        #                               reply_markup=history_back_restore_kb.get_back_restore(item[2], call.from_user.id))
+                    await call.message.answer(text,
+                        reply_markup=history_back_restore_kb.get_back_restore(item[2], call.from_user.id))
+                    print(len(text_list))
 
                 else:
                     await call.message.answer(f"История пуста",
-                                          reply_markup=history_back_restore_kb.get_back_restore(item[2]))
+                                          reply_markup=history_back_restore_kb.get_back_restore(item[2], call.from_user.id))
 
     await call.answer()
 

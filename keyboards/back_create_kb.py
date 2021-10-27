@@ -4,7 +4,7 @@ from aiogram import types
 
 def get_back_create(st_name):
     back = f'st_{st_name}'
-    create = f'new_task{st_name}'
+    create = f'new_task_{st_name}'
     # Генерация клавиатуры.
     buttons = [
         types.InlineKeyboardButton(text="Назад к заданиям", callback_data=back),
