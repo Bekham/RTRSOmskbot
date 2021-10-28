@@ -35,7 +35,7 @@ async def full_delete_task_num(message: types.Message, state: FSMContext):
         station = data.get('station')
     tasks = data['full_delete_task'].split(' ')
     for task in tasks:
-        if await sqlite_db.sql_delete_task(station, task):
+        if await sqlite_db.sql_full_delete_task(station, task):
             await message.answer(f"Задание №{task} удалено успешно!")
         else:
             await message.answer("Ошибка! Задание не удалено!",

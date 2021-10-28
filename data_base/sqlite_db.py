@@ -146,7 +146,7 @@ async def sql_restore_task(state, user_id, is_active=1):
     except:
         return False
 
-async def sql_delete_task(station, id):
+async def sql_full_delete_task(station, id):
     # async with state.proxy() as data:
     #     station = data.get('station')
     #     id = data.get('full_delete_task')
