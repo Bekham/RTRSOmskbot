@@ -148,7 +148,7 @@ async def station_history_back(call: types.CallbackQuery):
                         text += text_list[-1*i]
                     await call.message.answer(text,
                         reply_markup=history_back_restore_kb.get_back_restore(item[2], call.from_user.id, pages = page_range))
-                    print(page_range)
+                    # print(page_range)
 
                 else:
                     await call.message.answer(f"История пуста",
