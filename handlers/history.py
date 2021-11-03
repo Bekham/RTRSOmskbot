@@ -43,9 +43,16 @@ async def station_history(call: types.CallbackQuery):
                         #         f"{task[1]}\n"\
                         #         f"____________________________________\n"
                     page_range = f'{page_item_count}_0_{page_item_count}_{len(text_list)-page_item_count}'
-                    for i in range(page_item_count, 0, -1):
-                        text += text_list[-1*i]
-                    await call.message.answer(text,
+
+                    if len(data_station) <= page_item_count:
+                        for i in range(len(data_station), 0, -1):
+                            text += text_list[-1 * i]
+                        await call.message.answer(text,
+                        reply_markup=history_back_restore_kb.get_back_restore(item[2], call.from_user.id))
+                    else:
+                        for i in range(page_item_count, 0, -1):
+                            text += text_list[-1 * i]
+                        await call.message.answer(text,
                         reply_markup=history_back_restore_kb.get_back_restore(item[2], call.from_user.id, pages = page_range))
                     print(page_range)
 

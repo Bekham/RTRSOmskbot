@@ -33,13 +33,19 @@ async def restore_task_num(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['restores_task'] = message.text
         station = data.get('station')
-    if await sqlite_db.sql_restore_task(state, user_id=message.from_user.id):
-        await message.answer("Данные восстановлены успешно!",
-                             reply_markup=history_back_restore_kb.get_back_restore(station))
-    else:
-        await message.answer("Ошибка! Задание не восстановлено!",
-                             reply_markup=history_back_restore_kb.get_back_restore(station))
-    # print(data['description'], station)
+    task_current_status = sqlite_db.sql_read_station(station)
+    for task in task_current_status:
+        print(task[6])
+        if str(task[0]) == message.text and task[6] == 1:
+            await message.answer("Данное задание уже активно!",
+                                 reply_markup=history_back_restore_kb.get_back_restore(station))
+        elif str(task[0]) == message.text and task[6] != 1:
+            if await sqlite_db.sql_restore_task(state, user_id=message.from_user.id):
+                await message.answer("Данные восстановлены успешно!",
+                                     reply_markup=history_back_restore_kb.get_back_restore(station))
+            else:
+                await message.answer("Ошибка! Задание не восстановлено!",
+                                     reply_markup=history_back_restore_kb.get_back_restore(station))
     await state.finish()
 
 
