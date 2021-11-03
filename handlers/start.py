@@ -78,11 +78,22 @@ async def cmd_cancel(message: types.Message, state: FSMContext):
     await message.answer("Действие отменено", reply_markup=client_kb.kb_client)
 
 
+async def command_help(message: types.Message):
+    await message.delete()
+    await message.answer(f'Помощь начинающему АПГшнику:\n'
+                         f'1. Чтобы начать процесс авторизации, необходимо ввести:\n /start \n '
+                         f'2. Команда "Отмена" позволяет выйти из процесса регистрации/удаления/восстановления задания.'
+                         f'3. Выход к перечню станций через кнопку Станции (внизу экрана) или команду "Станции".')
+
+
 
 
 
 def register_handler_start(dp: Dispatcher):
     dp.register_message_handler(command_start, commands=['start'], state='*')
+    dp.register_message_handler(command_help, commands=['help'], state='*')
+    dp.register_message_handler(command_help, Text(startswith="help"), state='*')
+    dp.register_message_handler(command_help, Text(startswith="Help"), state='*')
     dp.register_message_handler(start_verification, state=FSMStart.verification)
     dp.register_message_handler(start_firstname, state=FSMStart.first_name)
     dp.register_message_handler(start_lastname, state=FSMStart.last_name)
