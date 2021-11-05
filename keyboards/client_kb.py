@@ -1,6 +1,6 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
 b1 = KeyboardButton('Станции')
-b2 = KeyboardButton('Отмена создания задания')
+b2 = KeyboardButton('Отмена')
 kb_client = ReplyKeyboardMarkup(resize_keyboard=True)
 kb_station_cancel = ReplyKeyboardMarkup(resize_keyboard=True)
 kb_client.add(b1)

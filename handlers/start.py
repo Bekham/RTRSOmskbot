@@ -94,6 +94,8 @@ def register_handler_start(dp: Dispatcher):
     dp.register_message_handler(command_help, commands=['help'], state='*')
     dp.register_message_handler(command_help, Text(startswith="help"), state='*')
     dp.register_message_handler(command_help, Text(startswith="Help"), state='*')
+    dp.register_message_handler(command_help, Text(startswith="Помощь"), state='*')
+    dp.register_message_handler(command_help, Text(startswith="помощь"), state='*')
     dp.register_message_handler(start_verification, state=FSMStart.verification)
     dp.register_message_handler(start_firstname, state=FSMStart.first_name)
     dp.register_message_handler(start_lastname, state=FSMStart.last_name)

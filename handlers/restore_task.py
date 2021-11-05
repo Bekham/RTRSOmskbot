@@ -1,3 +1,5 @@
+import asyncio
+
 from aiogram import types, Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text, state
@@ -18,14 +20,30 @@ async def restore_task(call: types.CallbackQuery, state: FSMContext):
         data_stations = sqlite_db.sql_read_all_stations()
         for item in data_stations:
             if station == item[2]:
-                await call.message.answer(f"Восстановление задания станции {item[1]}."
+                msg_id = call.inline_message_id
+                await call.message.answer(f"Восстановление задания станции {item[1]}. "
                                           f"Введите номер задания:",
                                           reply_markup=client_kb.kb_client)
 
                 await FSMRestoreTask.restores_task.set()
                 async with state.proxy() as data:
                     data['station'] = item[2]
-    await call.answer()
+                await asyncio.sleep(30)
+                try:
+                    async with state.proxy() as data:
+                        if len(data) == 2:
+                            pass
+                        else:
+                            raise KeyError
+                except KeyError:
+                    # Если пользователь не ответил или за это время state завершился, получаем KeyError
+                    async with state.proxy() as data:
+                        print(msg_id)
+                        if len(data) == 1 and msg_id == call.inline_message_id:
+                            await call.message.answer(f'Восстановление задания отменено'
+                                                      , reply_markup=client_kb.kb_client)
+                            await state.finish()
+    # await call.answer()
 
 
 

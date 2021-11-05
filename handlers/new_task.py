@@ -1,3 +1,5 @@
+import asyncio
+
 from aiogram import types, Dispatcher
 
 from aiogram.dispatcher import FSMContext
@@ -5,7 +7,7 @@ from aiogram.dispatcher.filters import Text, state
 from aiogram.dispatcher.filters.state import StatesGroup, State
 from create_bot import bot
 from data_base import sqlite_db
-from keyboards import edit_history_kb, client_kb, back_create_kb
+from keyboards import edit_history_kb, client_kb, back_create_kb, stations_kb
 
 
 class FSMNew_task(StatesGroup):
@@ -19,6 +21,7 @@ async def new_task(call: types.CallbackQuery, state: FSMContext):
         data_stations = sqlite_db.sql_read_all_stations()
         for item in data_stations:
             if station == item[2]:
+                msg_id = call.inline_message_id
                 await call.message.answer(f"Создание нового задания станции {item[1]}."
                                           f"Введите описание неисправности:",
                                           reply_markup=client_kb.kb_station_cancel)
@@ -27,11 +30,27 @@ async def new_task(call: types.CallbackQuery, state: FSMContext):
                 await FSMNew_task.new_task_description.set()
                 async with state.proxy() as data:
                     data['station'] = item[2]
-    await call.answer()
+                await asyncio.sleep(120)
+                try:
+                    async with state.proxy() as data:
+                        if len(data) == 2:
+                            pass
+                        else:
+                            raise KeyError
+                except KeyError:
+                    # Если пользователь не ответил или за это время state завершился, получаем KeyError
+                    async with state.proxy() as data:
+                        print(msg_id)
+                        if len(data) == 1 and msg_id == call.inline_message_id:
+                            await call.message.answer(f'Создание задания отменено'
+                                                      , reply_markup=client_kb.kb_client)
+                            await state.finish()
+
 
 
 
 async def task_description(message: types.Message, state: FSMContext):
+    print('OK')
     async with state.proxy() as data:
         data['description'] = message.text
         station = data.get('station')

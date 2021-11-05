@@ -1,3 +1,5 @@
+import asyncio
+
 from aiogram import types, Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text, state
@@ -18,14 +20,30 @@ async def delete_task(call: types.CallbackQuery, state: FSMContext):
         data_stations = sqlite_db.sql_read_all_stations()
         for item in data_stations:
             if station == item[2]:
+                msg_id = call.inline_message_id
                 await call.message.answer(f"Выполнение задания станции {item[1]}.\n"
                                           f"Введите номер задания для выполнения:",
-                                          reply_markup=client_kb.kb_client)
+                                          reply_markup=client_kb.kb_station_cancel)
                 # await call.message.answer("Введите номер задания для удаления:")
                 await FSMDel_task.num_del.set()
                 async with state.proxy() as data:
                     data['station'] = item[2]
-    await call.answer()
+                await asyncio.sleep(30)
+                try:
+                    async with state.proxy() as data:
+                        if len(data) == 2:
+                            pass
+                        else:
+                            raise KeyError
+                except KeyError:
+                    # Если пользователь не ответил или за это время state завершился, получаем KeyError
+                    async with state.proxy() as data:
+                        print(msg_id)
+                        if len(data) == 1 and msg_id == call.inline_message_id:
+                            await call.message.answer(f'Выполнение задания отменено'
+                                                      , reply_markup=client_kb.kb_client)
+                            await state.finish()
+    # await call.answer()
 
 
 
@@ -34,11 +52,13 @@ async def task_num_delete(message: types.Message, state: FSMContext):
         data['num_del'] = message.text
         station = data.get('station')
     if await sqlite_db.sql_delete_task(state, user_id=message.from_user.id,  is_active=0):
+        await message.answer("Данные записаны успешно!", reply_markup=client_kb.kb_client)
         await message.answer("Задание выполнено!",
                              reply_markup=back_delete_kb.get_back_delete(station))
+
     else:
-        await message.answer("Ошибка сохранения!\n"
-                             "Выполнение задания не сохранено!",
+        await message.answer("Ошибка сохранения!", reply_markup=client_kb.kb_client)
+        await message.answer("Выполнение задания не сохранено!",
                              reply_markup=back_delete_kb.get_back_delete(station))
     # print(data['description'], station)
     await state.finish()
