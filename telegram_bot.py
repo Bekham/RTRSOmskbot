@@ -2,8 +2,10 @@ from aiogram.utils import executor
 from create_bot import dp
 from data_base import sqlite_db
 from handlers import start, client, admin, other, new_task, history, delete_task, restore_task, full_delete_task
-
-
+import asyncio
+from datetime import datetime
+from parse import mobility_parse
+PARSE_TIME_HOURS = 1
 async def on_startup(_):
     print('Бот вышел в онлайн')
     sqlite_db.sql_start()
@@ -25,4 +27,15 @@ restore_task.register_handler_restore_task(dp)
 admin.register_handler_admin(dp)
 other.register_handler_other(dp)
 
-executor.start_polling(dp, skip_updates=True, on_startup=on_startup)
+
+async def scheduled(wait_for):
+  while True:
+    await asyncio.sleep(wait_for)
+    await mobility_parse.mobility_tasks()
+    print('Парсинг мобилити')
+
+
+if __name__ == '__main__':
+  loop = asyncio.get_event_loop()
+  loop.create_task(scheduled(PARSE_TIME_HOURS*60*60))
+  executor.start_polling(dp, skip_updates=True, on_startup=on_startup)

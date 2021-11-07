@@ -1,11 +1,14 @@
 import asyncio
+from contextlib import suppress
 
 from aiogram import types, Dispatcher
 
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text, state
 from aiogram.dispatcher.filters.state import StatesGroup, State
-from create_bot import bot
+from aiogram.utils.exceptions import ChatNotFound
+
+from create_bot import bot, dp
 from data_base import sqlite_db
 from keyboards import edit_history_kb, client_kb, back_create_kb, stations_kb
 
@@ -73,6 +76,20 @@ async def task_description(message: types.Message, state: FSMContext):
     # print(data['description'], station)
     await state.finish()
 
+async def new_task_mobility(task):
+    users_data = sqlite_db.sql_read_all_user()
+    station = task['_station'].split('(')[0]
+    type = task['_type'].split(' ')
+    desc = task['_desc']
+    for user in users_data:
+        with suppress(ChatNotFound):
+            text = f"Mobility: Станция {station}.\n" \
+                   f"Вид: {type[0]}. Приоритет: {type[1]}\n" \
+                   f"Описание: {desc}"
+            id = user[8]
+            print(text)
+            print(id)
+            await dp.bot.send_message(chat_id=str(id), text=text)
 
 
 
@@ -83,3 +100,4 @@ def register_new_task_query_handler(dp: Dispatcher):
 
 def register_handler_new_task(dp: Dispatcher):
     dp.register_message_handler(task_description, state=FSMNew_task.new_task_description)
+    # dp.register_message_handler(new_task_mobility, state='*')

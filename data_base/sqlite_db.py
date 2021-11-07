@@ -1,6 +1,6 @@
 import sqlite3 as sq
 import datetime
-
+from handlers import new_task
 
 # from create_bot import bot
 
@@ -27,6 +27,16 @@ def sql_start():
                  last_name TEXT,
                  is_admin BOOL,
                  chat_id INTEGER)""")
+    base.execute("""CREATE TABLE IF NOT EXISTS 'mobility_tasks'(
+                     id INTEGER PRIMARY KEY, 
+                     task_num TEXT NOT NULL,
+                     task_station TEXT,
+                     task_type TEXT,
+                     task_desc TEXT,
+                     task_date TEXT, 
+                     createDate timestamp,
+                     is_visible BOOL,
+                     addition INTEGER)""")
     create_stations_db()
     # load_data_users()
     base.commit()
@@ -234,3 +244,31 @@ def sql_update_user_chat_id(user_id, chat_id):
         return True
     except:
         return False
+
+
+async def sql_add_new_mobility_task(tasks):
+    for task_num in tasks.keys():
+        try:
+            sqlite_select_query_task_num = "SELECT * FROM mobility_tasks WHERE task_num=?"
+            records = cur.execute(sqlite_select_query_task_num, (task_num,)).fetchall()
+
+        except:
+            records = None
+        # print('test sql mobility', records)
+        if records == []:
+            task_station = tasks[task_num]['_station']
+            task_type = tasks[task_num]['_type']
+            task_desc = tasks[task_num]['_desc']
+            task_date = tasks[task_num]['_date']
+            createDate = datetime.datetime.now()
+            is_visible = 1
+            new_task_data = (task_num, task_station, task_type, task_desc, task_date, createDate, is_visible)
+            sqlite_select_query = "INSERT IF EXISTS INTO mobility_tasks (task_num, task_station, task_type, task_desc, task_date, createDate, is_visible) VALUES (?, ?, ?, ?, ?, ?, ?)"
+            try:
+                cur.execute(sqlite_select_query, new_task_data)
+                base.commit()
+
+
+            except:
+                pass
+            await new_task.new_task_mobility(task=tasks[task_num])
