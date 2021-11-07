@@ -87,8 +87,8 @@ async def new_task_mobility(task):
                    f"Вид: {type[0]}. Приоритет: {type[1]}\n" \
                    f"Описание: {desc}"
             id = user[8]
-            print(text)
-            print(id)
+            # print(text)
+            # print(id)
             await dp.bot.send_message(chat_id=str(id), text=text)
 
 
