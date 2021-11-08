@@ -27,8 +27,9 @@ def get_keyboard():
         types.InlineKeyboardButton(text="Исилькуль", callback_data="st_isilkul"),
         types.InlineKeyboardButton(text="Омск", callback_data="st_omsk"),
     ]
+    mobility = types.InlineKeyboardButton(text="Мобилити", callback_data="mobility_list")
     # Благодаря row_width=2, в первом ряду будет две кнопки, а оставшаяся одна
     # уйдёт на следующую строку
     keyboard = types.InlineKeyboardMarkup(row_width=3)
-    keyboard.add(*buttons)
+    keyboard.add(*buttons).add(mobility)
     return keyboard

@@ -63,7 +63,7 @@ async def mobility_tasks():
             '_date': _date
         }
 
-    if tasks:
+    if len(tasks) > 0:
         print('Скачано с сайта')
         await sqlite_db.sql_add_new_mobility_task(tasks)
     #     # print(task_num[i].text.replace('	', '').replace('\n',''))

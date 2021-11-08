@@ -249,7 +249,7 @@ def sql_update_user_chat_id(user_id, chat_id):
 async def sql_add_new_mobility_task(tasks):
     for task_num in tasks.keys():
         try:
-            sqlite_select_query_task_num = "SELECT * FROM mobility_tasks WHERE task_num=?"
+            sqlite_select_query_task_num = """SELECT * FROM mobility_tasks WHERE task_num=?"""
             records = cur.execute(sqlite_select_query_task_num, (task_num,)).fetchall()
 
         except:
@@ -263,7 +263,7 @@ async def sql_add_new_mobility_task(tasks):
             createDate = datetime.datetime.now()
             is_visible = 1
             new_task_data = (task_num, task_station, task_type, task_desc, task_date, createDate, is_visible)
-            sqlite_select_query = "INSERT IF EXISTS INTO mobility_tasks (task_num, task_station, task_type, task_desc, task_date, createDate, is_visible) VALUES (?, ?, ?, ?, ?, ?, ?)"
+            sqlite_select_query = """INSERT INTO mobility_tasks (task_num, task_station, task_type, task_desc, task_date, createDate, is_visible) VALUES (?, ?, ?, ?, ?, ?, ?)"""
             try:
                 cur.execute(sqlite_select_query, new_task_data)
                 base.commit()
@@ -272,3 +272,11 @@ async def sql_add_new_mobility_task(tasks):
             except:
                 pass
             await new_task.new_task_mobility(task=tasks[task_num])
+
+def sql_read_all_mobility():
+    try:
+        sqlite_select_query = """SELECT * FROM mobility_tasks"""
+        records = cur.execute(sqlite_select_query).fetchall()
+        return records
+    except:
+        return None

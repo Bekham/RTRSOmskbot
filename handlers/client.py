@@ -74,6 +74,19 @@ async def callbacks_num(call: types.CallbackQuery):
     await call.answer()
     # await call.message.delete_reply_markup()
 
+async def mobility_list(call: types.CallbackQuery):
+    mobility_list = sqlite_db.sql_read_all_mobility()
+    task_text = ''
+    for item in mobility_list:
+        if item[5]:
+            # print(item)
+            task_text += (f"Станция: {item[2]}. Дата: {item[5]}. \n "
+                             f"Описание: {item[4]}\n"
+                             f"____________________________________\n")
+    await call.message.answer(task_text,
+                                  reply_markup=client_kb.kb_client)
+    await call.answer()
+
 
 
 def register_handler_client(dp: Dispatcher):
@@ -82,6 +95,7 @@ def register_handler_client(dp: Dispatcher):
 
 def register_callback_query_handler(dp: Dispatcher):
     dp.register_callback_query_handler(callbacks_num, Text(startswith="st_"))
+    dp.register_callback_query_handler(mobility_list, Text(startswith="mobility_list"))
 
 
 
