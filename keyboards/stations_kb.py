@@ -18,7 +18,7 @@ def get_keyboard():
         types.InlineKeyboardButton(text="Полтавка", callback_data="st_polavka"),
         types.InlineKeyboardButton(text="Русская Поляна", callback_data="st_rp"),
         types.InlineKeyboardButton(text="Саргатское", callback_data="st_sargatskoe"),
-        types.InlineKeyboardButton(text="Цветково", callback_data="st_tsetkovo"),
+        types.InlineKeyboardButton(text="Цветково", callback_data="st_setkovo"),
         types.InlineKeyboardButton(text="Цветнополье", callback_data="st_tsvetnopole"),
         types.InlineKeyboardButton(text="Щербакуль", callback_data="st_sherbakul"),
         types.InlineKeyboardButton(text="Щербаки", callback_data="st_sherbaki"),
