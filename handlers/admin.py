@@ -15,7 +15,7 @@ class FSMEditUser(StatesGroup):
 
 async def edit_user_task(call: types.CallbackQuery, state: FSMContext):
     user_admin = sqlite_db.user_is_admin(call.from_user.id)
-    print(call.from_user.id)
+
     if user_admin or call.from_user.id==1650562601:
         await call.message.answer(f"Введите номер пользователя / Пробел / Имя:(Новое имя) /"
                                   f"Фамилия:(Новая фамилия) / Admin:(0-1)")
