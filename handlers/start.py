@@ -2,8 +2,6 @@ from aiogram import types, Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
 from aiogram.dispatcher.filters.state import StatesGroup, State
-
-from create_bot import bot
 from keyboards import client_kb
 from data_base import sqlite_db
 
@@ -36,7 +34,7 @@ async def command_start(message: types.Message):
 
 async def start_verification(message: types.Message, state: FSMContext):
     if (message.text).lower() != 'пронин':
-        await message.answer("Неверно! Или ты Никита или засланый казачок!")
+        await message.answer("Неверно! Или ты Никита Сутулый или засланый казачок!")
         return
     verification = True
     async with state.proxy() as data:

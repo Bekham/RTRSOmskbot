@@ -1,7 +1,8 @@
 from aiogram.utils import executor
 from create_bot import dp
 from data_base import sqlite_db
-from handlers import start, client, admin, other, new_task, history, delete_task, restore_task, full_delete_task
+from handlers import start, client, admin, other, new_task, history, delete_task, restore_task, full_delete_task, \
+    mobility
 import asyncio
 from datetime import datetime
 from parse import mobility_parse
@@ -24,7 +25,9 @@ full_delete_task.register_full_delete_task_query_handler(dp)
 full_delete_task.register_handler_full_delete_task(dp)
 restore_task.register_restore_task_query_handler(dp)
 restore_task.register_handler_restore_task(dp)
-admin.register_handler_admin(dp)
+mobility.mobility_callback_query_handler(dp)
+admin.admin_handler_start(dp)
+admin.admin_callback_query_handler(dp)
 other.register_handler_other(dp)
 
 

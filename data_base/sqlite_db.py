@@ -267,11 +267,46 @@ async def sql_add_new_mobility_task(tasks):
             try:
                 cur.execute(sqlite_select_query, new_task_data)
                 base.commit()
-
-
             except:
                 pass
             await new_task.new_task_mobility(task=tasks[task_num])
+
+async def sql_find_old_mobility_task(tasks):
+    try:
+        sqlite_select_query_task_num = """SELECT * FROM mobility_tasks"""
+        records = cur.execute(sqlite_select_query_task_num).fetchall()
+    except:
+        records = None
+    for record in records:
+        if record[1] not in tasks.keys():
+            is_visible = 0
+            try:
+                cur.execute('''UPDATE mobility_tasks SET is_visible = ? WHERE task_num = ?''', (is_visible, record[1]))
+                base.commit()
+
+            except:
+                pass
+
+            # print(record)
+    # for task_num in tasks.keys():
+    #
+    #         records = None
+    #     # print('test sql mobility', records)
+    #     if records == []:
+    #         task_station = tasks[task_num]['_station']
+    #         task_type = tasks[task_num]['_type']
+    #         task_desc = tasks[task_num]['_desc']
+    #         task_date = tasks[task_num]['_date']
+    #         createDate = datetime.datetime.now()
+    #         is_visible = 1
+    #         new_task_data = (task_num, task_station, task_type, task_desc, task_date, createDate, is_visible)
+    #         sqlite_select_query = """INSERT INTO mobility_tasks (task_num, task_station, task_type, task_desc, task_date, createDate, is_visible) VALUES (?, ?, ?, ?, ?, ?, ?)"""
+    #         try:
+    #             cur.execute(sqlite_select_query, new_task_data)
+    #             base.commit()
+    #         except:
+    #             pass
+    #         await new_task.new_task_mobility(task=tasks[task_num])
 
 def sql_read_all_mobility():
     try:
