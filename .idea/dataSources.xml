@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="rtrs.db" uuid="eec1430d-1b80-4393-9f12-ac9164b7a0f2">
+    <data-source source="LOCAL" name="rtrs.db" uuid="6988fca8-cf6a-489f-8056-21956b4d0057">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
