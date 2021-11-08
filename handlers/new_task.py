@@ -25,7 +25,7 @@ async def new_task(call: types.CallbackQuery, state: FSMContext):
         for item in data_stations:
             if station == item[2]:
                 msg_id = call.inline_message_id
-                await call.message.answer(f"Создание нового задания станции {item[1]}."
+                await call.message.answer(f"Создание нового задания станции {item[1]}.\n"
                                           f"Введите описание неисправности:",
                                           reply_markup=client_kb.kb_station_cancel)
                 # await call.message.answer("Введите описание неисправности:",

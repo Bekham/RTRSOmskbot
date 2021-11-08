@@ -24,7 +24,7 @@ async def admin_users_list(call: types.CallbackQuery):
             else:
                 is_admin = False
             task_text += (f"{user[0]}: {user[5]} {user[6]} \n "
-                          f"Дата входа: {user[4]}"
+                          f"Дата входа: {user[4]} \n"
                           f"Admin: {is_admin}\n"
                           f"____________________________________\n")
 
