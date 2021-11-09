@@ -6,7 +6,7 @@ from handlers import start, client, admin, other, new_task, history, delete_task
 import asyncio
 from datetime import datetime
 from parse import mobility_parse
-PARSE_TIME_HOURS = 1/40
+PARSE_TIME_HOURS = 1/2
 async def on_startup(_):
     print('Бот вышел в онлайн')
     sqlite_db.sql_start()
