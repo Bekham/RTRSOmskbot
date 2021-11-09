@@ -42,8 +42,20 @@ def sql_start():
     create_stations_db()
     add_first_admin()
     # load_data_users()
+    add_user_id_users()
     base.commit()
 
+def add_user_id_users():
+    users = sql_read_all_user()
+    for user in users:
+        if user[8] == None:
+            chat_id = user[1]
+            user_id = user[1]
+            try:
+                cur.execute('''UPDATE 'users' SET chat_id = ? WHERE user_id = ?''', (chat_id, user_id))
+                base.commit()
+            except:
+                pass
 
 
 def add_data_table_stations():
@@ -217,9 +229,10 @@ async def sql_add_new_user(state, user_id, is_admin=0):
     user_id = user_id
     createDate = datetime.datetime.now()
     lastVisitDate = datetime.datetime.now()
-    user_data = (user_id, user_name, createDate, lastVisitDate, first_name, last_name, is_admin)
+    chat_id = user_id
+    user_data = (user_id, user_name, createDate, lastVisitDate, first_name, last_name, is_admin, chat_id)
     cur.execute(
-        """INSERT INTO 'users' (user_id, user_name, createDate, lastVisitDate, first_name, last_name, is_admin) VALUES (?, ?, ?, ?, ?, ?, ?)""",
+        """INSERT INTO 'users' (user_id, user_name, createDate, lastVisitDate, first_name, last_name, is_admin, chat_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
         user_data)
     base.commit()
 
