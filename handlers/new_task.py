@@ -19,6 +19,7 @@ class FSMNew_task(StatesGroup):
 
 async def new_task(call: types.CallbackQuery, state: FSMContext):
     user_data = sqlite_db.sql_read_user(call.from_user.id)
+    await call.answer()
     if call.from_user.id == user_data[1]:
         station = call.data.split("_task_")[1]
         data_stations = sqlite_db.sql_read_all_stations()
@@ -33,10 +34,11 @@ async def new_task(call: types.CallbackQuery, state: FSMContext):
                 await FSMNew_task.new_task_description.set()
                 async with state.proxy() as data:
                     data['station'] = item[2]
-                await asyncio.sleep(120)
+                await asyncio.sleep(240)
                 try:
                     async with state.proxy() as data:
                         if len(data) == 2:
+
                             pass
                         else:
                             raise KeyError
@@ -48,6 +50,7 @@ async def new_task(call: types.CallbackQuery, state: FSMContext):
                             await call.message.answer(f'Создание задания отменено'
                                                       , reply_markup=client_kb.kb_client)
                             await state.finish()
+
 
 
 
