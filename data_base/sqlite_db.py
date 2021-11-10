@@ -347,9 +347,11 @@ async def sql_add_new_mobility_task(tasks):
                 base.commit()
             except:
                 pass
-            if task_desc.startswith('Плановое'):
+            if tasks[task_num]['_type'].startswith('Плановое'):
+                # print(tasks[task_num])
                 pass
             else:
+                # print('Alarma',tasks[task_num])
                 await new_task.new_task_mobility(task=tasks[task_num])
 
 async def sql_find_old_mobility_task(tasks):
