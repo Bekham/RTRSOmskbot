@@ -1,3 +1,4 @@
+import json
 import sqlite3 as sq
 import datetime
 from handlers import new_task
@@ -7,7 +8,7 @@ from handlers import new_task
 
 def sql_start():
     global base, cur
-    base = sq.connect('rtrs.db')
+    base = sq.connect('rtrs_omsk.db')
     cur = base.cursor()
     if base:
         print('Data base connected OK')
@@ -37,26 +38,44 @@ def sql_start():
                      createDate timestamp,
                      is_visible BOOL,
                      addition INTEGER)""")
+    add_data_table_stations()
     create_stations_db()
+    add_first_admin()
     # load_data_users()
+    add_user_id_users()
     base.commit()
 
-def load_data_users():
+def add_user_id_users():
     users = sql_read_all_user()
     for user in users:
-        user_id = user[1]
-        user_name = user[2]
-        createDate = user[3]
-        lastVisitDate = user[4]
-        first_name = user[5]
-        last_name = user[6]
-        is_admin = user[7]
-        user_data = (user_id, user_name, createDate, lastVisitDate, first_name, last_name, is_admin)
-        cur.execute(
-            """INSERT INTO users (user_id, user_name, createDate, lastVisitDate, first_name, last_name, is_admin) VALUES (?, ?, ?, ?, ?, ?, ?)""",
-            user_data)
-        base.commit()
-        print(user)
+        if user[8] == None:
+            chat_id = user[1]
+            user_id = user[1]
+            try:
+                cur.execute('''UPDATE 'users' SET chat_id = ? WHERE user_id = ?''', (chat_id, user_id))
+                base.commit()
+            except:
+                pass
+
+
+def add_data_table_stations():
+    stations = sql_read_all_stations()
+    if len(stations) == 0:
+        with open('data_base/fixtures/stations.json', 'r', encoding='utf-8') as f:
+            data = json.loads(f.read())
+            # print(data)
+            for item in data['stations']:
+                # print(item)
+                station_rus = item['station_rus']
+                station_lat = item['station_lat']
+                description = item['description']
+                add_data = (station_rus, station_lat, description)
+                cur.execute('INSERT INTO stations (station_rus, station_lat, description) VALUES (?, ?, ?)',
+                            tuple(add_data))
+            base.commit()
+
+
+
 
 
 def create_stations_db():
@@ -168,6 +187,40 @@ async def sql_full_delete_task(station, id):
     except:
         return False
 
+def add_first_admin():
+    users = sql_read_all_user()
+    if len(users) == 0:
+        user_name = 'Антон'
+        first_name = 'Антон'
+        last_name = 'Беккер'
+        user_id = 1650562601
+        createDate = datetime.datetime.now()
+        lastVisitDate = datetime.datetime.now()
+        is_admin = 1
+        user_data = (user_id, user_name, createDate, lastVisitDate, first_name, last_name, is_admin)
+        cur.execute(
+            """INSERT INTO 'users' (user_id, user_name, createDate, lastVisitDate, first_name, last_name, is_admin) VALUES (?, ?, ?, ?, ?, ?, ?)""",
+            user_data)
+        base.commit()
+
+def load_data_users():
+    users = sql_read_all_user()
+    for user in users:
+        user_id = user[1]
+        user_name = user[2]
+        createDate = user[3]
+        lastVisitDate = user[4]
+        first_name = user[5]
+        last_name = user[6]
+        is_admin = user[7]
+        user_data = (user_id, user_name, createDate, lastVisitDate, first_name, last_name, is_admin)
+        cur.execute(
+            """INSERT INTO users (user_id, user_name, createDate, lastVisitDate, first_name, last_name, is_admin) VALUES (?, ?, ?, ?, ?, ?, ?)""",
+            user_data)
+        base.commit()
+        print(user)
+
+
 async def sql_add_new_user(state, user_id, is_admin=0):
     async with state.proxy() as data:
         user_name = data.get('first_name').title()
@@ -176,9 +229,10 @@ async def sql_add_new_user(state, user_id, is_admin=0):
     user_id = user_id
     createDate = datetime.datetime.now()
     lastVisitDate = datetime.datetime.now()
-    user_data = (user_id, user_name, createDate, lastVisitDate, first_name, last_name, is_admin)
+    chat_id = user_id
+    user_data = (user_id, user_name, createDate, lastVisitDate, first_name, last_name, is_admin, chat_id)
     cur.execute(
-        """INSERT INTO 'users' (user_id, user_name, createDate, lastVisitDate, first_name, last_name, is_admin) VALUES (?, ?, ?, ?, ?, ?, ?)""",
+        """INSERT INTO 'users' (user_id, user_name, createDate, lastVisitDate, first_name, last_name, is_admin, chat_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
         user_data)
     base.commit()
 
@@ -207,9 +261,33 @@ def sql_update_user(user_id, username):
         cur.execute('''UPDATE 'users' SET user_name = ? WHERE user_id = ?''', (username, user_id))
         cur.execute('''UPDATE 'users' SET lastVisitDate = ? WHERE user_id = ?''', (datetime.datetime.now(), user_id))
         base.commit()
-
     except:
         pass
+
+def sql_admin_update_user(user_pk, fields):
+    for key, item in fields.items():
+
+        try:
+
+            user_data = (str(item), int(user_pk))
+
+            if key == 'Имя':
+                print('Name')
+                cur.execute('''UPDATE 'users' SET first_name = ? WHERE id = ?''', (user_data))
+            elif key == 'Фамилия':
+                cur.execute('''UPDATE 'users' SET last_name = ? WHERE id = ?''', (user_data))
+            elif key == 'Admin':
+                cur.execute('''UPDATE 'users' SET is_admin = ? WHERE id = ?''', (user_data))
+            else:
+                return False
+            base.commit()
+            return True
+        except:
+            return False
+
+
+
+
 
 
 def sql_update_date_user(user_id):
@@ -269,7 +347,12 @@ async def sql_add_new_mobility_task(tasks):
                 base.commit()
             except:
                 pass
-            await new_task.new_task_mobility(task=tasks[task_num])
+            if tasks[task_num]['_type'].startswith('Плановое'):
+                # print(tasks[task_num])
+                pass
+            else:
+                # print('Alarma',tasks[task_num])
+                await new_task.new_task_mobility(task=tasks[task_num])
 
 async def sql_find_old_mobility_task(tasks):
     try:
