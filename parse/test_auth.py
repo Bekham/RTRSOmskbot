@@ -45,6 +45,7 @@ task_station = soup.find_all('p', class_='mt-5 l-4xs')
 task_type = soup.find_all('td', class_=re.compile("^table__cell work-td"))
 task_desc = soup.find_all('div', class_='link link_style_6 l-4s bold')
 task_date = soup.find_all('td', class_='table__cell wp-120')
+task_status = soup.find_all('span', class_=re.compile("^status item"))
 tasks = {}
 # print(task_type)
 for i in range(len(task_num)):
@@ -54,12 +55,14 @@ for i in range(len(task_num)):
     type = task_type[i].text.replace('	', '').replace('\n','').replace('приоритет:',' ')
     desc = task_desc[i].text.replace('	', '').replace('\n','')
     date = task_date[i].text.replace('	', '').replace('\n','').replace(' ','').replace(',','').replace('\xa0',' ')[:16]
-    print(num, type, desc, date, station)
+    status = task_status[i].text.replace('	', '').replace('\n','').replace(' ','')
+    print(num, type, desc, date, station, status)
     tasks[num] = {
         '_station': station,
         'type': type,
         'desc': desc,
-        'date': date
+        'date': date,
+        '_task_status':status
     }
 
 #     # print(task_num[i].text.replace('	', '').replace('\n',''))

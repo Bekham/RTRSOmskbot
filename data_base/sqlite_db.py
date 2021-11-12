@@ -347,7 +347,9 @@ async def sql_add_new_mobility_task(tasks):
                 base.commit()
             except:
                 pass
-            if tasks[task_num]['_type'].startswith('Плановое'):
+            if tasks[task_num]['_type'].startswith('Плановое') \
+                    or tasks[task_num]['_task_status'].startswith('оценкавыставлена')\
+                    or tasks[task_num]['_task_status'].startswith('выполнено'):
                 # print(tasks[task_num])
                 pass
             else:
@@ -369,6 +371,22 @@ async def sql_find_old_mobility_task(tasks):
 
             except:
                 pass
+        for task_num in tasks.keys():
+            # print(tasks[task_num], record[1])
+            # if task_num == record[1]:
+            #     print(task_num, record[1], tasks[task_num]['_task_status'].startswith('оценкавыставлена'), tasks[task_num]['_task_status'].startswith('выполнено'))
+            if task_num == record[1] and (tasks[task_num]['_task_status'].startswith('оценкавыставлена')
+                                                 or tasks[task_num]['_task_status'].startswith('выполнено')):
+                is_visible = 0
+                try:
+                    cur.execute('''UPDATE mobility_tasks SET is_visible = ? WHERE task_num = ?''',
+                                (is_visible, record[1]))
+                    base.commit()
+
+                except:
+                    pass
+        # print('ok')
+
 
             # print(record)
     # for task_num in tasks.keys():
