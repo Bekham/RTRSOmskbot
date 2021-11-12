@@ -366,7 +366,7 @@ async def sql_find_old_mobility_task(tasks):
         if record[1] not in tasks.keys():
             is_visible = 0
             try:
-                cur.execute('''UPDATE mobility_tasks SET is_visible = ? WHERE task_num = ?''', (is_visible, record[1]))
+                cur.execute('''DELETE FROM mobility_tasks WHERE task_num = ?''', (record[1],))
                 base.commit()
 
             except:
