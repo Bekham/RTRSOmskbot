@@ -133,7 +133,8 @@ async def trip_user_answer(call: types.CallbackQuery, state: FSMContext):
         await call.message.answer(f"Данные о поездке записаны успешно!\n"
                                   f"Создано пользователем {current_user_data[5]} {current_user_data[6]}\n"
                                   f"Поездка для {current_trip_data[5]} {current_trip_data[6]}\n"
-                                  f"Станция: РТС {trip_data['trip_station']}. Дата {str(trip_data['trip_date']).split(' ')[0]}\n"
+                                  f"Станция: РТС {sqlite_db.sql_find_name_station(trip_data['trip_station'])[0][0]}. "
+                                  f"Дата {str(trip_data['trip_date']).split(' ')[0]}\n"
                                   f"Описание поездки: {trip_data['trip_desc']}\n"
                                   f"____________________________________\n",
                                   reply_markup=client_kb.kb_client)
@@ -143,7 +144,7 @@ async def trip_user_answer(call: types.CallbackQuery, state: FSMContext):
             if user[1] != call.from_user.id and user[8]:
                 call.message.text = f"{current_user_data[5]} {current_user_data[6]} создал поездку.\n"\
                                     f"Поездка для {current_trip_data[5]} {current_trip_data[6]}\n"\
-                                    f"Станция: РТС {trip_data['trip_station']}. " \
+                                    f"Станция: РТС {sqlite_db.sql_find_name_station(trip_data['trip_station'])[0][0]}. " \
                                     f"Дата {str(trip_data['trip_date']).split(' ')[0]}\n"\
                                     f"Описание поездки: {trip_data['trip_desc']}\n"
                 # await message.reply(message.text)
