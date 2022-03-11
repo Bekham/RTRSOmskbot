@@ -38,12 +38,25 @@ def sql_start():
                      createDate timestamp,
                      is_visible BOOL,
                      addition INTEGER)""")
+    base.execute("""CREATE TABLE IF NOT EXISTS 'trips'(
+                         id INTEGER PRIMARY KEY,
+                         trip_station TEXT,
+                         trip_creator INTEGER,
+                         trip_worker INTEGER,
+                         trip_date TEXT, 
+                         trip_desc TEXT,
+                         createDate timestamp,
+                         is_visible BOOL,
+                         addition TEXT)""")
     add_data_table_stations()
     create_stations_db()
     add_first_admin()
     # load_data_users()
     add_user_id_users()
     base.commit()
+
+
+
 
 def add_user_id_users():
     users = sql_read_all_user()
@@ -73,9 +86,6 @@ def add_data_table_stations():
                 cur.execute('INSERT INTO stations (station_rus, station_lat, description) VALUES (?, ?, ?)',
                             tuple(add_data))
             base.commit()
-
-
-
 
 
 def create_stations_db():
@@ -137,6 +147,28 @@ async def sql_add_new_task(state, user_id, is_active=1):
         return True
     except:
         return False
+
+def sql_find_all_task_by_user_id (user_id):
+    try:
+        all_stations = sql_read_all_stations()
+        create_tasks = 0
+        close_tasks = 0
+        for station in all_stations:
+            station_tasks = sql_read_station(station[2])
+            if station_tasks:
+                for task in station_tasks:
+                    user_create = task[2]
+                    user_update = task[3]
+                    is_active = task[6]
+                    if user_create == user_id:
+                        create_tasks += 1
+                    if user_update == user_id and not is_active:
+                        close_tasks += 1
+        return (create_tasks, close_tasks)
+    except Exception:
+        return False
+
+
 
 
 async def sql_delete_task(state, user_id, is_active=0):
@@ -385,29 +417,7 @@ async def sql_find_old_mobility_task(tasks):
 
                 except:
                     pass
-        # print('ok')
 
-
-            # print(record)
-    # for task_num in tasks.keys():
-    #
-    #         records = None
-    #     # print('test sql mobility', records)
-    #     if records == []:
-    #         task_station = tasks[task_num]['_station']
-    #         task_type = tasks[task_num]['_type']
-    #         task_desc = tasks[task_num]['_desc']
-    #         task_date = tasks[task_num]['_date']
-    #         createDate = datetime.datetime.now()
-    #         is_visible = 1
-    #         new_task_data = (task_num, task_station, task_type, task_desc, task_date, createDate, is_visible)
-    #         sqlite_select_query = """INSERT INTO mobility_tasks (task_num, task_station, task_type, task_desc, task_date, createDate, is_visible) VALUES (?, ?, ?, ?, ?, ?, ?)"""
-    #         try:
-    #             cur.execute(sqlite_select_query, new_task_data)
-    #             base.commit()
-    #         except:
-    #             pass
-    #         await new_task.new_task_mobility(task=tasks[task_num])
 
 def sql_read_all_mobility():
     try:
@@ -416,3 +426,68 @@ def sql_read_all_mobility():
         return records
     except:
         return None
+
+
+def load_data_trips(trip):
+    try:
+        trip_data = (trip['trip_station'],
+                     trip['trip_creator'],
+                     trip['trip_worker'],
+                     trip['trip_date'],
+                     trip['trip_desc'],
+                     datetime.datetime.now(),
+                     1)
+        cur.execute(
+            """INSERT INTO 'trips' (
+                trip_station, 
+                trip_creator, 
+                trip_worker, 
+                trip_date, 
+                trip_desc, 
+                createDate, 
+                is_visible) VALUES (?, ?, ?, ?, ?, ?, ?)""", trip_data)
+        base.commit()
+        return True
+    except Exception:
+        return False
+
+def read_data_trips(user_id=None):
+    if user_id:
+        try:
+            sqlite_select_query = """SELECT * FROM 'trips' WHERE trip_worker=?"""
+            trips_user = cur.execute(sqlite_select_query, (user_id,)).fetchall()
+            return trips_user
+        except Exception:
+            return False
+    else:
+        try:
+            sqlite_select_query = """SELECT * FROM 'trips'"""
+            trips_user = cur.execute(sqlite_select_query).fetchall()
+            return trips_user
+        except Exception:
+            return False
+
+async def sql_delete_trip(state, is_active=0):
+    async with state.proxy() as data:
+        id = int(data.get('num_del'))
+    column_values = (is_active, id)
+    try:
+        sqlite_update_query = "UPDATE 'trips' SET is_visible = ? WHERE id = ?"
+        cur.execute(sqlite_update_query, column_values)
+        base.commit()
+        return True
+    except:
+        return False
+
+def sql_find_all_trips_by_user_id (user_id):
+    try:
+        all_trips = read_data_trips(user_id)
+        count = 0
+        if len(all_trips):
+            for trip in all_trips:
+                if trip[7]:
+                    count += 1
+        return count
+
+    except Exception:
+        return 0

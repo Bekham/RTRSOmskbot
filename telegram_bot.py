@@ -2,15 +2,13 @@ from aiogram.utils import executor
 from create_bot import dp
 from data_base import sqlite_db
 from handlers import start, client, admin, other, new_task, history, delete_task, restore_task, full_delete_task, \
-    mobility
+    mobility, new_trip, profile, trip_history, delete_trip
 import asyncio
 from parse import mobility_parse
 PARSE_TIME_HOURS = 1/2
 async def on_startup(_):
     print('Бот вышел в онлайн')
     sqlite_db.sql_start()
-
-
 
 start.register_handler_start(dp)
 client.register_handler_client(dp)
@@ -25,6 +23,15 @@ full_delete_task.register_handler_full_delete_task(dp)
 restore_task.register_restore_task_query_handler(dp)
 restore_task.register_handler_restore_task(dp)
 mobility.mobility_callback_query_handler(dp)
+profile.register_handler_profile(dp)
+profile.register_callback_query_handler(dp)
+# new_trip.register_new_trip_station(dp)
+new_trip.register_handler_new_trip(dp)
+new_trip.register_callback_query_handler(dp)
+trip_history.register_trip_history_query_handler(dp)
+# new_trip.register_handler_new_trip_data(dp)
+delete_trip.register_delete_trip_query_handler(dp)
+delete_trip.register_handler_delete_trip(dp)
 admin.admin_handler_start(dp)
 admin.admin_callback_query_handler(dp)
 other.register_handler_other(dp)

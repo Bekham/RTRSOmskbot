@@ -17,6 +17,7 @@ class FSMNew_task(StatesGroup):
     station = State()
     new_task_description = State()
 
+
 async def new_task(call: types.CallbackQuery, state: FSMContext):
     user_data = sqlite_db.sql_read_user(call.from_user.id)
     await call.answer()
@@ -29,8 +30,6 @@ async def new_task(call: types.CallbackQuery, state: FSMContext):
                 await call.message.answer(f"Создание нового задания станции {item[1]}.\n"
                                           f"Введите описание неисправности:",
                                           reply_markup=client_kb.kb_station_cancel)
-                # await call.message.answer("Введите описание неисправности:",
-                #                           reply_markup=client_kb.kb_client)
                 await FSMNew_task.new_task_description.set()
                 async with state.proxy() as data:
                     data['station'] = item[2]
@@ -52,18 +51,16 @@ async def new_task(call: types.CallbackQuery, state: FSMContext):
                             await state.finish()
 
 
-
-
-
 async def task_description(message: types.Message, state: FSMContext):
     print('OK')
     async with state.proxy() as data:
         data['description'] = message.text
         station = data.get('station')
-    task =  message.text
+    task = message.text
     if await sqlite_db.sql_add_new_task(state, user_id=message.from_user.id):
         await message.answer("Данные записаны успешно!", reply_markup=client_kb.kb_client)
-        await message.answer("Задание добавлено в список активных задач!", reply_markup=back_create_kb.get_back_create(station))
+        await message.answer("Задание добавлено в список активных задач!",
+                             reply_markup=back_create_kb.get_back_create(station))
         users_data = sqlite_db.sql_read_all_user()
         current_user_data = sqlite_db.sql_read_user(message.from_user.id)
         for user in users_data:
@@ -71,13 +68,14 @@ async def task_description(message: types.Message, state: FSMContext):
                 message.text = f'{current_user_data[5]} {current_user_data[6]} создал задание.\n' \
                                f'Станция: {sqlite_db.sql_find_name_station(station)[0][0]}.\n' \
                                f'Описание: {task}.'
-        # await message.reply(message.text)
+                # await message.reply(message.text)
                 message.chat.id = user[8]
                 await bot.send_message(message.chat.id, message.text)
     else:
         await message.answer("Ошибка! Задание не записано!", reply_markup=back_create_kb.get_back_create(station))
     # print(data['description'], station)
     await state.finish()
+
 
 async def new_task_mobility(task):
     users_data = sqlite_db.sql_read_all_user()
@@ -93,8 +91,6 @@ async def new_task_mobility(task):
             # print(text)
             # print(id)
             await dp.bot.send_message(chat_id=str(id), text=text)
-
-
 
 
 def register_new_task_query_handler(dp: Dispatcher):
