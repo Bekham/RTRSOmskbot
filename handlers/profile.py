@@ -12,6 +12,7 @@ from keyboards import edit_history_kb
 
 async def profile_main(message: types.Message):
     user_data = sqlite_db.sql_read_user(message.from_user.id)
+    sqlite_db.sql_update_user_visit(message.from_user.id)
     try:
         if message.from_user.id == user_data[1]:
             profit_tasks = sqlite_db.sql_find_all_task_by_user_id(message.from_user.id)
@@ -69,6 +70,7 @@ async def profile_main_back(call: types.CallbackQuery):
             # await message.delete()
     except TypeError:
         await call.message.answer("Введите /start для авторизации")
+    await call.answer()
 
 
 
@@ -81,6 +83,7 @@ async def users_profile_list(call: types.CallbackQuery):
                              reply_markup=profile_kb.get_user_profiles())
         except TypeError:
             await call.message.answer("Введите /start для авторизации")
+    await call.answer()
 
 
 def register_handler_profile(dp: Dispatcher):

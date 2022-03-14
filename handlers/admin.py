@@ -52,7 +52,8 @@ async def admin_users_list(call: types.CallbackQuery):
             else:
                 is_admin = False
             task_text += (f"{user[0]}: {user[5]} {user[6]} \n "
-                          f"Дата входа: {user[4][:-7]} \n"
+                          f"Дата регистрации: {user[3][:-7]} \n"
+                          f"Дата последнего входа: {user[4][:-7]} \n"
                           f"Admin: {is_admin}\n"
                           f"____________________________________\n")
         await call.message.answer(task_text, reply_markup=admin_edit_users_kb.get_admin_edit_users_keyboard())

@@ -26,7 +26,8 @@ async def command_start(message: types.Message):
             # print(message)
             # print(message.from_user.id)
             sqlite_db.sql_update_user_chat_id(message.from_user.id, message.chat.id)
-
+            sqlite_db.sql_update_user_visit(message.from_user.id)
+        sqlite_db.sql_update_user_visit(message.from_user.id)
         await message.answer(f'Привет, {user_data[2]}!\n'
                              f'Добро пожаловать в РТРС ОМСК',
                              reply_markup=client_kb.kb_client)
@@ -72,11 +73,13 @@ async def start_lastname(message: types.Message, state: FSMContext):
 
 
 async def cmd_cancel(message: types.Message, state: FSMContext):
+    sqlite_db.sql_update_user_visit(message.from_user.id)
     await state.finish()
     await message.answer("Действие отменено", reply_markup=client_kb.kb_client)
 
 
 async def command_help(message: types.Message):
+    sqlite_db.sql_update_user_visit(message.from_user.id)
     await message.delete()
     await message.answer(f'Помощь начинающему АПГшнику:\n'
                          f'1. Чтобы начать процесс авторизации, необходимо ввести:\n /start \n '

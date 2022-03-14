@@ -296,6 +296,13 @@ def sql_update_user(user_id, username):
     except:
         pass
 
+def sql_update_user_visit(user_id):
+    try:
+        cur.execute('''UPDATE 'users' SET lastVisitDate = ? WHERE user_id = ?''', (datetime.datetime.now(), user_id))
+        base.commit()
+    except:
+        pass
+
 def sql_admin_update_user(user_pk, fields):
     for key, item in fields.items():
 

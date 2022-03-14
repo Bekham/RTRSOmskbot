@@ -29,6 +29,7 @@ async def trip_registration(call: types.CallbackQuery):
         if call.from_user.id == user_data[1]:
             await call.message.answer("Регистрация поездки.\n"
                                  "Укажите, куда направляетесь:", reply_markup=stations_trip_kb.get_keyboard())
+            await call.answer()
             await FSMNew_trip.station.set()
             # await message.delete()
     except TypeError:

@@ -6,6 +6,7 @@ from keyboards import edit_history_kb
 
 
 async def stations(message: types.Message):
+    sqlite_db.sql_update_user_visit(message.from_user.id)
     user_data = sqlite_db.sql_read_user(message.from_user.id)
     try:
         if message.from_user.id == user_data[1]:

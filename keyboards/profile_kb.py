@@ -13,7 +13,7 @@ def get_trips_history(user_id):
     # mobility = types.InlineKeyboardButton(text="Мобилити (Активные задания)", callback_data="mobility_list")
     # Благодаря row_width=2, в первом ряду будет две кнопки, а оставшаяся одна
     # уйдёт на следующую строку
-    keyboard = types.InlineKeyboardMarkup(row_width=1)
+    keyboard = types.InlineKeyboardMarkup(row_width=2)
     # keyboard.add(*buttons).add(mobility)
     keyboard.add(*buttons)
     return keyboard
