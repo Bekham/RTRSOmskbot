@@ -5,8 +5,8 @@ from data_base import sqlite_db
 
 def get_back_restore(user_id_trips=0, user_id_request=0, pages='5_0_5_0'):
     back = f'profile_back_{user_id_trips}'
-    back_history = f'trips_back_history_{pages}_{user_id_trips}_{user_id_request}'
-    next_history = f'trips_next_history_{pages}_{user_id_trips}_{user_id_request}'
+    back_history = f'trips_history_back_{pages}_{user_id_trips}_{user_id_request}'
+    next_history = f'trips_history_next_{pages}_{user_id_trips}_{user_id_request}'
     # Генерация клавиатуры.
     delete_task = f'trips_delete_{user_id_trips}'
     list_buttons = []
@@ -39,7 +39,7 @@ def get_back_restore(user_id_trips=0, user_id_request=0, pages='5_0_5_0'):
 def get_trips_history_back(user_id):
     # Генерация клавиатуры.
     buttons = [
-        types.InlineKeyboardButton(text="История поездок", callback_data=f"trip_history_{user_id}"),
+        types.InlineKeyboardButton(text="История поездок", callback_data=f"trip_history_curr_{user_id}"),
     ]
     # mobility = types.InlineKeyboardButton(text="Мобилити (Активные задания)", callback_data="mobility_list")
     # Благодаря row_width=2, в первом ряду будет две кнопки, а оставшаяся одна

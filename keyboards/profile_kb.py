@@ -7,7 +7,7 @@ def get_trips_history(user_id):
     # Генерация клавиатуры.
     buttons = [
         types.InlineKeyboardButton(text="Добавить поездку", callback_data=f"add_trip"),
-        types.InlineKeyboardButton(text="История поездок", callback_data=f"trip_history_{user_id}"),
+        types.InlineKeyboardButton(text="История поездок", callback_data=f"trip_history_curr_{user_id}"),
         types.InlineKeyboardButton(text="Профили пользователей", callback_data=f"users_profile"),
     ]
     # mobility = types.InlineKeyboardButton(text="Мобилити (Активные задания)", callback_data="mobility_list")
@@ -46,3 +46,12 @@ def get_user_profiles():
     keyboard = types.InlineKeyboardMarkup(row_width=2)
     keyboard.add(*buttons_users)
     return keyboard
+
+# def any_msg(answer=None):
+#     keyboard = types.InlineKeyboardMarkup()
+#     if answer:
+#         callback_button = types.InlineKeyboardButton(text="Нажми меня", callback_data=answer)
+#     else:
+#         callback_button = types.InlineKeyboardButton(text="Нажми меня", callback_data="test")
+#     keyboard.add(callback_button)
+#     return keyboard

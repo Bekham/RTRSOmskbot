@@ -16,7 +16,15 @@ async def profile_main(message: types.Message):
     try:
         if message.from_user.id == user_data[1]:
             profit_tasks = sqlite_db.sql_find_all_task_by_user_id(message.from_user.id)
-            profit_trips = sqlite_db.sql_find_all_trips_by_user_id(message.from_user.id)
+            profit_trips = sqlite_db.sql_find_all_trips_count_by_user_id(message.from_user.id)
+            profit_trips_days = sqlite_db.read_data_trips(int(message.from_user.id))
+            trip_days = 0
+            holidays = 0
+            for trip in profit_trips_days:
+                if trip[7]:
+                    trip_days += int(trip[8])
+                    if trip[9]:
+                        holidays += int(trip[9])
             profile_data = {
                 'first_name': user_data[5],
                 'last_name': user_data[6],
@@ -28,15 +36,19 @@ async def profile_main(message: types.Message):
             else:
                 profile_data['create_tasks'] = 0
                 profile_data['close_tasks'] = 0
+            # await message.answer(f"Профиль пользователя:\n", reply_markup=profile_kb.any_msg())
             await message.answer(f"Профиль пользователя:\n"
                                  f"Имя: {profile_data['first_name']}\n"
                                  f"Фамилия: {profile_data['last_name']}\n"
                                  f"Дата регистрации: {profile_data['create_date']}\n\n"
                                  f"Заданий создано: {profile_data['create_tasks']}\n"
                                  f"Заданий выполнено: {profile_data['close_tasks']}\n"
-                                 f"Поездок выполнено: {profit_trips}\n",
+                                 f"Поездок выполнено: {profit_trips}\n"
+                                 f"Всего дней в командировках: {trip_days} дней\n"
+                                 f"В выходные дни: {holidays} дней\n",
                                  reply_markup=profile_kb.get_trips_history(user_id=user_data[1]))
             # await message.delete()
+
     except TypeError:
         await message.answer("Введите /start для авторизации")
 
@@ -47,7 +59,12 @@ async def profile_main_back(call: types.CallbackQuery):
     try:
         if user_data:
             profit_tasks = sqlite_db.sql_find_all_task_by_user_id(int(profile_user_id))
-            profit_trips = sqlite_db.sql_find_all_trips_by_user_id(int(profile_user_id))
+            profit_trips = sqlite_db.sql_find_all_trips_count_by_user_id(int(profile_user_id))
+            profit_trips_days = sqlite_db.read_data_trips(int(profile_user_id))
+            trip_days = 0
+            for trip in profit_trips_days:
+                if trip[7]:
+                    trip_days += int(trip[8])
             profile_data = {
                 'first_name': user_data[5],
                 'last_name': user_data[6],
@@ -65,7 +82,8 @@ async def profile_main_back(call: types.CallbackQuery):
                                  f"Дата регистрации: {profile_data['create_date']}\n\n"
                                  f"Заданий создано: {profile_data['create_tasks']}\n"
                                  f"Заданий выполнено: {profile_data['close_tasks']}\n"
-                                 f"Поездок выполнено: {profit_trips}\n",
+                                 f"Поездок выполнено: {profit_trips}\n"
+                                 f"Всего дней в командировках: {trip_days}\n",
                                  reply_markup=profile_kb.get_trips_history(user_id=user_data[1]))
             # await message.delete()
     except TypeError:

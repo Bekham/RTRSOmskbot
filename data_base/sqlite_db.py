@@ -1,9 +1,11 @@
 import json
+import sqlite3
 import sqlite3 as sq
 import datetime
 from handlers import new_task
 
 # from create_bot import bot
+from parse import holidays
 
 
 def sql_start():
@@ -47,7 +49,12 @@ def sql_start():
                          trip_desc TEXT,
                          createDate timestamp,
                          is_visible BOOL,
-                         addition TEXT)""")
+                         addition TEXT
+                         )""")
+    try:
+        base.execute("alter table 'trips' add column '%s' 'integer'" % 'sunday')
+    except sqlite3.OperationalError:
+        pass
     add_data_table_stations()
     create_stations_db()
     add_first_admin()
@@ -113,6 +120,27 @@ def sql_read_all_stations():
     except:
         return None
 
+def sql_find_name_station_trips(stations_lat):
+    try:
+        stations = stations_lat.split('_')
+        stations_rus = ''
+        for station_lat in stations:
+            try:
+                sqlite_select_query = """SELECT station_rus FROM stations WHERE station_lat=?"""
+                station_rus = cur.execute(sqlite_select_query, (station_lat,)).fetchall()
+                stations_rus += f', {station_rus[0][0]}'
+            except:
+                return None
+        return stations_rus[2:]
+    except:
+        try:
+            sqlite_select_query = """SELECT station_rus FROM stations WHERE station_lat=?"""
+            station_rus = cur.execute(sqlite_select_query, (stations_lat,)).fetchall()
+            return station_rus[0][0]
+        except:
+            return None
+
+
 def sql_find_name_station(station_lat):
     try:
         sqlite_select_query = """SELECT station_rus FROM stations WHERE station_lat=?"""
@@ -120,7 +148,6 @@ def sql_find_name_station(station_lat):
         return station_rus
     except:
         return None
-
 
 def sql_read_station(station):
     try:
@@ -443,7 +470,9 @@ def load_data_trips(trip):
                      trip['trip_date'],
                      trip['trip_desc'],
                      datetime.datetime.now(),
-                     1)
+                     trip['trip_days'],
+                     1,
+                     trip['holi_days'])
         cur.execute(
             """INSERT INTO 'trips' (
                 trip_station, 
@@ -451,8 +480,10 @@ def load_data_trips(trip):
                 trip_worker, 
                 trip_date, 
                 trip_desc, 
-                createDate, 
-                is_visible) VALUES (?, ?, ?, ?, ?, ?, ?)""", trip_data)
+                createDate,
+                addition, 
+                is_visible,
+                sunday) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""", trip_data)
         base.commit()
         return True
     except Exception:
@@ -486,7 +517,7 @@ async def sql_delete_trip(state, is_active=0):
     except:
         return False
 
-def sql_find_all_trips_by_user_id (user_id):
+def sql_find_all_trips_count_by_user_id (user_id):
     try:
         all_trips = read_data_trips(user_id)
         count = 0
