@@ -8,8 +8,8 @@ from keyboards import edit_history_kb, history_back_restore_kb
 
 
 async def station_history(call: types.CallbackQuery):
-    user_data = sqlite_db.sql_read_user(call.from_user.id)
-    if call.from_user.id == user_data[1]:
+    user_data = sqlite_db.sql_read_user(call.from_user.id) # Поиск пользователя в базе
+    if call.from_user.id == user_data[1]: # Если юзер в базе, то ищем историю станции
         station = call.data.split("istory_")[1]
         data_stations = sqlite_db.sql_read_all_stations()
         for item in data_stations:
@@ -17,8 +17,6 @@ async def station_history(call: types.CallbackQuery):
                 data_station = sqlite_db.sql_read_station(station)
                 if data_station:
                     await call.message.answer(f"История заданий станции {item[1]}:")
-                    # total_count = len(data_station)
-                    # num_list = 0
                     page_item_count = 3
                     text_list = []
                     text = ''
@@ -36,12 +34,7 @@ async def station_history(call: types.CallbackQuery):
                                 f"Статус: {status}\n"
                                 f"{task[1]}\n"
                                 f"____________________________________\n")
-                        # text += f"Задание №{task[0]}. \n" \
-                        #         f"Создано {(task[4]).split(' ')[0]} пользователем {user_create[0][5]} {user_create[0][6]}\n"\
-                        #         f"Обновлено {(task[5]).split(' ')[0]} пользователем {user_update[0][5]} {user_update[0][6]}\n"\
-                        #         f"Статус: {status}\n"\
-                        #         f"{task[1]}\n"\
-                        #         f"____________________________________\n"
+
                     page_range = f'{page_item_count}_0_{page_item_count}_{len(text_list)-page_item_count}'
 
                     if len(data_station) <= page_item_count:

@@ -5,7 +5,9 @@ import json
 # import os
 
 
-def sql_add_stations(data):
+def sql_add_stations():
+    with open('fixtures/stations.json', 'r', encoding='utf-8') as f:
+        data = json.loads(f.read())
     for item in data:
         station_rus = item['station_rus']
         station_lat = item['station_lat']
@@ -19,7 +21,7 @@ def sql_add_stations(data):
 base = sq.connect('../rtrs.db')
 cur = base.cursor()
 
-with open('fixtures/stations.json', 'r', encoding='utf-8') as f:
-    data = json.loads(f.read())
-sql_add_stations(data['stations'])
+# with open('fixtures/stations.json', 'r', encoding='utf-8') as f:
+#     data = json.loads(f.read())
+# sql_add_stations(data['stations'])
 # db_path = os.chdir("../data_base")

@@ -46,6 +46,7 @@ async def mobility_tasks():
     task_type = soup.find_all('td', class_=re.compile("^table__cell work-td"))
     task_desc = soup.find_all('div', class_='link link_style_6 l-4s bold')
     task_date = soup.find_all('td', class_='table__cell wp-120')
+    task_status = soup.find_all('span', class_=re.compile("^status item"))
     tasks = {}
     # print(task_type)
     for i in range(len(task_num)):
@@ -55,12 +56,14 @@ async def mobility_tasks():
         _type = task_type[i].text.replace('	', '').replace('\n','').replace('приоритет:',' ')
         _desc = task_desc[i].text.replace('	', '').replace('\n','')
         _date = task_date[i].text.replace('	', '').replace('\n','').replace(' ','').replace(',','').replace('\xa0',' ')[:16]
+        _status = task_status[i].text.replace('	', '').replace('\n', '').replace(' ', '')
         # print(num, type, desc, date)
         tasks[_num] = {
             '_station': _station,
             '_type': _type,
             '_desc': _desc,
-            '_date': _date
+            '_date': _date,
+            '_task_status': _status
         }
 
     if len(tasks) > 0:

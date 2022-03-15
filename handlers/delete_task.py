@@ -16,7 +16,9 @@ class FSMDel_task(StatesGroup):
 async def delete_task(call: types.CallbackQuery, state: FSMContext):
     user_data = sqlite_db.sql_read_user(call.from_user.id)
     if call.from_user.id == user_data[1]:
+        await call.answer()
         station = call.data.split("_task_")[1]
+
         data_stations = sqlite_db.sql_read_all_stations()
         for item in data_stations:
             if station == item[2]:

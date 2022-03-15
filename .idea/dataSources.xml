@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="rtrs.db" uuid="eec1430d-1b80-4393-9f12-ac9164b7a0f2">
+    <data-source source="LOCAL" name="rtrs_omsk.db" uuid="0d16fdbc-0ecf-454b-8e64-de70c05a9321">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/rtrs.db</jdbc-url>
+      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/rtrs_omsk.db</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
   </component>

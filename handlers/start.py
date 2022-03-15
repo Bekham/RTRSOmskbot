@@ -26,7 +26,8 @@ async def command_start(message: types.Message):
             # print(message)
             # print(message.from_user.id)
             sqlite_db.sql_update_user_chat_id(message.from_user.id, message.chat.id)
-
+            sqlite_db.sql_update_user_visit(message.from_user.id)
+        sqlite_db.sql_update_user_visit(message.from_user.id)
         await message.answer(f'Привет, {user_data[2]}!\n'
                              f'Добро пожаловать в РТРС ОМСК',
                              reply_markup=client_kb.kb_client)
@@ -72,16 +73,21 @@ async def start_lastname(message: types.Message, state: FSMContext):
 
 
 async def cmd_cancel(message: types.Message, state: FSMContext):
+    sqlite_db.sql_update_user_visit(message.from_user.id)
     await state.finish()
     await message.answer("Действие отменено", reply_markup=client_kb.kb_client)
 
 
 async def command_help(message: types.Message):
+    sqlite_db.sql_update_user_visit(message.from_user.id)
     await message.delete()
     await message.answer(f'Помощь начинающему АПГшнику:\n'
                          f'1. Чтобы начать процесс авторизации, необходимо ввести:\n /start \n '
-                         f'2. Команда "Отмена" позволяет выйти из процесса регистрации/удаления/восстановления задания.'
-                         f'3. Выход к перечню станций через кнопку Станции (внизу экрана) или команду "Станции".')
+                         f'2. Команда "Отмена" позволяет выйти из процесса регистрации/удаления/восстановления задания или поездки.\n'
+                         f'3. Выход к перечню станций через кнопку Станции (внизу экрана) или команду "Станции".\n'
+                         f'4. Вход в профиль через кнопку Профиль Станции (внизу экрана) или команду "Профиль".\n'
+                         f'5. В Профиле есть возможность создания поездок своих или коллег.\n'
+                         f'6. Через Профиль можно посмотреть статистику других зарегистрированных пользователей')
 
 
 

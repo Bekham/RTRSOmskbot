@@ -1,22 +1,19 @@
-from datetime import datetime
-
 from aiogram import types, Dispatcher
-from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
-from aiogram.dispatcher.filters.state import StatesGroup, State
-from keyboards import stations_kb, plan_mobility_kb
-from create_bot import bot
-from keyboards import client_kb
+from keyboards import stations_kb
 from data_base import sqlite_db
 from keyboards import edit_history_kb
 
 
 async def stations(message: types.Message):
+    sqlite_db.sql_update_user_visit(message.from_user.id)
     user_data = sqlite_db.sql_read_user(message.from_user.id)
-    if message.from_user.id == user_data[1]:
-        await message.answer("Станции Омского Цеха:", reply_markup=stations_kb.get_keyboard())
-        # await message.delete()
-
+    try:
+        if message.from_user.id == user_data[1]:
+            await message.answer("Станции Омского Цеха:", reply_markup=stations_kb.get_keyboard())
+            # await message.delete()
+    except TypeError:
+        await message.answer("Введите /start для авторизации")
 
 
 async def callbacks_num(call: types.CallbackQuery):
@@ -65,7 +62,7 @@ async def callbacks_num(call: types.CallbackQuery):
                                               reply_markup=edit_history_kb.get_keyboard_station(item[2]))
                 else:
                     await call.message.answer(f"Задания по станции {item[1]} отсутствуют.",
-                                                  reply_markup=edit_history_kb.get_keyboard_station(item[2]))
+                                              reply_markup=edit_history_kb.get_keyboard_station(item[2]))
             else:
                 # await call.message.answer(f"Задания по станции {item[1]}:")
                 await call.message.answer(f"Задания по станции {item[1]} отсутствуют.",
@@ -75,16 +72,9 @@ async def callbacks_num(call: types.CallbackQuery):
     # await call.message.delete_reply_markup()
 
 
-
-
-
 def register_handler_client(dp: Dispatcher):
     dp.register_message_handler(stations, Text(equals="Станции"), state='*')
 
 
 def register_callback_query_handler(dp: Dispatcher):
     dp.register_callback_query_handler(callbacks_num, Text(startswith="st_"))
-
-
-
-
