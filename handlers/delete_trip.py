@@ -18,7 +18,8 @@ async def delete_trip(call: types.CallbackQuery, state: FSMContext):
     kb_data = call.data.split("_")
     user_id_trip = int(kb_data[-1])
     user_trip = sqlite_db.find_user(user_id_trip)[0]
-    if call.from_user.id == user_data[1] and user_id_trip == call.from_user.id:
+    if call.from_user.id == user_data[1] \
+            and (user_id_trip == call.from_user.id or sqlite_db.user_is_admin(call.from_user.id)):
 
         await call.answer()
         data_trips = sqlite_db.read_data_trips(user_id=user_id_trip)

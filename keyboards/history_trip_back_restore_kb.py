@@ -24,7 +24,7 @@ def get_back_restore(user_id_trips=0, user_id_request=0, pages='5_0_5_0'):
     if len(list_buttons) != 0:
         keyboard.add(*list_buttons)
 
-    if user_id_trips == user_id_request:
+    if user_id_trips == user_id_request or sqlite_db.user_is_admin(user_id_request):
         delete_button = types.InlineKeyboardButton(text="Удалить запись", callback_data=delete_task)
         keyboard.add(*buttons).add(delete_button)
     else:

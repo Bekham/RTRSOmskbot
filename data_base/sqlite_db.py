@@ -464,6 +464,14 @@ def sql_read_all_mobility():
 
 def load_data_trips(trip):
     try:
+        all_worker_trips = read_data_trips(trip['trip_worker'])
+        stations = trip['trip_station'].split('_')
+        for trip_db in all_worker_trips:
+            trip_date = trip_db[4]
+            if trip_date == str(trip['trip_date']):
+                for station in stations:
+                    if station in trip_db[1].split('_'):
+                        return False
         trip_data = (trip['trip_station'],
                      trip['trip_creator'],
                      trip['trip_worker'],
@@ -473,6 +481,7 @@ def load_data_trips(trip):
                      trip['trip_days'],
                      1,
                      trip['holi_days'])
+
         cur.execute(
             """INSERT INTO 'trips' (
                 trip_station, 

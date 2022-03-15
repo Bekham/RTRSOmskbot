@@ -226,7 +226,9 @@ async def trip_user_answer(call: types.CallbackQuery, state: FSMContext):
                 call.message.chat.id = user[8]
                 await bot.send_message(call.message.chat.id, call.message.text)
     else:
-        await call.message.answer("Ошибка записи! Попробуйте еще раз!",
+        await call.message.answer("Ошибка записи! Попробуйте еще раз!"
+                                  "Возможно данная запись уже существует, "
+                                  "проверьте историю!",
                                   reply_markup=client_kb.kb_client)
     await state.finish()
 
